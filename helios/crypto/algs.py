@@ -33,14 +33,14 @@ class ElGamal:
         return keypair
 
     def toJSONDict(self):
-        return {'p': str(self.p), 'q': str(self.q), 'g': str(self.g)}
+        return {"p": str(self.p), "q": str(self.q), "g": str(self.g)}
 
     @classmethod
     def fromJSONDict(cls, d):
         eg = cls()
-        eg.p = int(d['p'])
-        eg.q = int(d['q'])
-        eg.g = int(d['g'])
+        eg.p = int(d["p"])
+        eg.q = int(d["q"])
+        eg.g = int(d["g"])
         return eg
 
 
@@ -111,7 +111,7 @@ class EGPublicKey:
         """
         Serialize to dictionary.
         """
-        return {'y': str(self.y), 'p': str(self.p), 'g': str(self.g), 'q': str(self.q)}
+        return {"y": str(self.y), "p": str(self.p), "g": str(self.g), "q": str(self.q)}
 
     toJSONDict = to_dict
 
@@ -140,11 +140,15 @@ class EGPublicKey:
         g^response = commitment * y^challenge
         """
         left_side = pow(self.g, dlog_proof.response, self.p)
-        right_side = (dlog_proof.commitment * pow(self.y, dlog_proof.challenge, self.p)) % self.p
+        right_side = (
+            dlog_proof.commitment * pow(self.y, dlog_proof.challenge, self.p)
+        ) % self.p
 
         expected_challenge = challenge_generator(dlog_proof.commitment) % self.q
 
-        return (left_side == right_side) and (dlog_proof.challenge == expected_challenge)
+        return (left_side == right_side) and (
+            dlog_proof.challenge == expected_challenge
+        )
 
     def validate_pk_params(self):
         # check primality of p
@@ -181,10 +185,10 @@ class EGPublicKey:
         Deserialize from dictionary.
         """
         pk = cls()
-        pk.y = int(d['y'])
-        pk.p = int(d['p'])
-        pk.g = int(d['g'])
-        pk.q = int(d['q'])
+        pk.y = int(d["y"])
+        pk.p = int(d["p"])
+        pk.g = int(d["g"])
+        pk.q = int(d["q"])
 
         try:
             pk.validate_pk_params()
@@ -217,7 +221,14 @@ class EGSecretKey:
 
         dec_factor = self.decryption_factor(ciphertext)
 
-        proof = EGZKProof.generate(self.pk.g, ciphertext.alpha, self.x, self.pk.p, self.pk.q, challenge_generator)
+        proof = EGZKProof.generate(
+            self.pk.g,
+            ciphertext.alpha,
+            self.x,
+            self.pk.p,
+            self.pk.q,
+            challenge_generator,
+        )
 
         return dec_factor, proof
 
@@ -254,7 +265,10 @@ class EGSecretKey:
         and alpha^t = b * beta/m ^ c
         """
 
-        m = (number.inverse(pow(ciphertext.alpha, self.x, self.pk.p), self.pk.p) * ciphertext.beta) % self.pk.p
+        m = (
+            number.inverse(pow(ciphertext.alpha, self.x, self.pk.p), self.pk.p)
+            * ciphertext.beta
+        ) % self.pk.p
         beta_over_m = (ciphertext.beta * number.inverse(m, self.pk.p)) % self.pk.p
 
         # pick a random w
@@ -262,18 +276,18 @@ class EGSecretKey:
         a = pow(self.pk.g, w, self.pk.p)
         b = pow(ciphertext.alpha, w, self.pk.p)
 
-        c = int(SHA1.new(bytes(str(a) + "," + str(b), 'utf-8')).hexdigest(), 16)
+        c = int(SHA1.new(bytes(str(a) + "," + str(b), "utf-8")).hexdigest(), 16)
 
         t = (w + self.x * c) % self.pk.q
 
         return m, {
-            'commitment': {'A': str(a), 'B': str(b)},
-            'challenge': str(c),
-            'response': str(t)
+            "commitment": {"A": str(a), "B": str(b)},
+            "challenge": str(c),
+            "response": str(t),
         }
 
     def to_dict(self):
-        return {'x': str(self.x), 'public_key': self.pk.to_dict()}
+        return {"x": str(self.x), "public_key": self.pk.to_dict()}
 
     toJSONDict = to_dict
 
@@ -297,9 +311,9 @@ class EGSecretKey:
             return None
 
         sk = cls()
-        sk.x = int(d['x'])
-        if 'public_key' in d:
-            sk.pk = EGPublicKey.from_dict(d['public_key'])
+        sk.x = int(d["x"])
+        if "public_key" in d:
+            sk.pk = EGPublicKey.from_dict(d["public_key"])
         else:
             sk.pk = None
         return sk
@@ -313,12 +327,12 @@ class EGPlaintext:
         self.pk = pk
 
     def to_dict(self):
-        return {'m': self.m}
+        return {"m": self.m}
 
     @classmethod
     def from_dict(cls, d):
         r = cls()
-        r.m = d['m']
+        r.m = d["m"]
         return r
 
 
@@ -338,7 +352,7 @@ class EGCiphertext:
         if self.pk != other.pk:
             logging.info(self.pk)
             logging.info(other.pk)
-            raise Exception('different PKs!')
+            raise Exception("different PKs!")
 
         new = EGCiphertext()
 
@@ -394,8 +408,8 @@ class EGCiphertext:
         proof = EGZKProof()
 
         # compute A=g^w, B=y^w
-        proof.commitment['A'] = pow(self.pk.g, w, self.pk.p)
-        proof.commitment['B'] = pow(self.pk.y, w, self.pk.p)
+        proof.commitment["A"] = pow(self.pk.g, w, self.pk.p)
+        proof.commitment["B"] = pow(self.pk.y, w, self.pk.p)
 
         # generate challenge
         proof.challenge = challenge_generator(proof.commitment)
@@ -414,21 +428,30 @@ class EGCiphertext:
         proof.challenge = challenge
 
         # compute beta/plaintext, the completion of the DH tuple
-        beta_over_plaintext = (self.beta * number.inverse(plaintext.m, self.pk.p)) % self.pk.p
+        beta_over_plaintext = (
+            self.beta * number.inverse(plaintext.m, self.pk.p)
+        ) % self.pk.p
 
         # random response, does not even need to depend on the challenge
         proof.response = random.mpz_lt(self.pk.q)
 
         # now we compute A and B
-        proof.commitment['A'] = (number.inverse(pow(self.alpha, proof.challenge, self.pk.p), self.pk.p)
-                                 * pow(self.pk.g, proof.response, self.pk.p)
-                                 ) % self.pk.p
-        proof.commitment['B'] = (number.inverse(pow(beta_over_plaintext, proof.challenge, self.pk.p), self.pk.p) * pow(
-            self.pk.y, proof.response, self.pk.p)) % self.pk.p
+        proof.commitment["A"] = (
+            number.inverse(pow(self.alpha, proof.challenge, self.pk.p), self.pk.p)
+            * pow(self.pk.g, proof.response, self.pk.p)
+        ) % self.pk.p
+        proof.commitment["B"] = (
+            number.inverse(
+                pow(beta_over_plaintext, proof.challenge, self.pk.p), self.pk.p
+            )
+            * pow(self.pk.y, proof.response, self.pk.p)
+        ) % self.pk.p
 
         return proof
 
-    def generate_disjunctive_encryption_proof(self, plaintexts, real_index, randomness, challenge_generator):
+    def generate_disjunctive_encryption_proof(
+        self, plaintexts, real_index, randomness, challenge_generator
+    ):
         # note how the interface is as such so that the result does not reveal which is the real proof.
 
         proofs = [None for _ in plaintexts]
@@ -458,7 +481,9 @@ class EGCiphertext:
             return real_challenge % self.pk.q
 
         # do the real proof
-        real_proof = self.generate_encryption_proof(plaintexts[real_index], randomness, real_challenge_generator)
+        real_proof = self.generate_encryption_proof(
+            plaintexts[real_index], randomness, real_challenge_generator
+        )
 
         # set the real proof
         proofs[real_index] = real_proof
@@ -473,30 +498,41 @@ class EGCiphertext:
         Proof contains commitment = {A, B}, challenge, response
         """
         # check that A, B are in the correct group
-        if not (pow(proof.commitment['A'], self.pk.q, self.pk.p) == 1 and pow(proof.commitment['B'], self.pk.q,
-                                                                              self.pk.p) == 1):
+        if not (
+            pow(proof.commitment["A"], self.pk.q, self.pk.p) == 1
+            and pow(proof.commitment["B"], self.pk.q, self.pk.p) == 1
+        ):
             return False
 
         # check that g^response = A * alpha^challenge
-        first_check = (pow(self.pk.g, proof.response, self.pk.p) == (
-                (pow(self.alpha, proof.challenge, self.pk.p) * proof.commitment['A']) % self.pk.p))
+        first_check = pow(self.pk.g, proof.response, self.pk.p) == (
+            (pow(self.alpha, proof.challenge, self.pk.p) * proof.commitment["A"])
+            % self.pk.p
+        )
 
         # check that y^response = B * (beta/m)^challenge
         beta_over_m = (self.beta * number.inverse(plaintext.m, self.pk.p)) % self.pk.p
-        second_check = (pow(self.pk.y, proof.response, self.pk.p) == (
-                (pow(beta_over_m, proof.challenge, self.pk.p) * proof.commitment['B']) % self.pk.p))
+        second_check = pow(self.pk.y, proof.response, self.pk.p) == (
+            (pow(beta_over_m, proof.challenge, self.pk.p) * proof.commitment["B"])
+            % self.pk.p
+        )
 
         # print "1,2: %s %s " % (first_check, second_check)
         return first_check and second_check
 
-    def verify_disjunctive_encryption_proof(self, plaintexts, proof, challenge_generator):
+    def verify_disjunctive_encryption_proof(
+        self, plaintexts, proof, challenge_generator
+    ):
         """
         plaintexts and proofs are all lists of equal length, with matching.
 
         overall_challenge is what all of the challenges combined should yield.
         """
         if len(plaintexts) != len(proof.proofs):
-            print("bad number of proofs (expected %s, found %s)" % (len(plaintexts), len(proof.proofs)))
+            print(
+                "bad number of proofs (expected %s, found %s)"
+                % (len(plaintexts), len(proof.proofs))
+            )
             return False
 
         for i in range(len(plaintexts)):
@@ -508,8 +544,9 @@ class EGCiphertext:
         # logging.info("made it past the two encryption proofs")
 
         # check the overall challenge
-        return (challenge_generator([p.commitment for p in proof.proofs]) == (
-                sum([p.challenge for p in proof.proofs]) % self.pk.q))
+        return challenge_generator([p.commitment for p in proof.proofs]) == (
+            sum([p.challenge for p in proof.proofs]) % self.pk.q
+        )
 
     def verify_decryption_proof(self, plaintext, proof):
         """
@@ -531,7 +568,9 @@ class EGCiphertext:
         """
         running_decryption = self.beta
         for dec_factor in decryption_factors:
-            running_decryption = (running_decryption * number.inverse(dec_factor, public_key.p)) % public_key.p
+            running_decryption = (
+                running_decryption * number.inverse(dec_factor, public_key.p)
+            ) % public_key.p
 
         return running_decryption
 
@@ -555,7 +594,7 @@ class EGCiphertext:
             return True
 
     def to_dict(self):
-        return {'alpha': str(self.alpha), 'beta': str(self.beta)}
+        return {"alpha": str(self.alpha), "beta": str(self.beta)}
 
     toJSONDict = to_dict
 
@@ -565,8 +604,8 @@ class EGCiphertext:
     @classmethod
     def from_dict(cls, d, pk=None):
         result = cls()
-        result.alpha = int(d['alpha'])
-        result.beta = int(d['beta'])
+        result.alpha = int(d["alpha"])
+        result.beta = int(d["beta"])
         result.pk = pk
         return result
 
@@ -578,12 +617,12 @@ class EGCiphertext:
         expects alpha,beta
         """
         split = str.split(",")
-        return cls.from_dict({'alpha': split[0], 'beta': split[1]})
+        return cls.from_dict({"alpha": split[0], "beta": split[1]})
 
 
 class EGZKProof(object):
     def __init__(self):
-        self.commitment = {'A': None, 'B': None}
+        self.commitment = {"A": None, "B": None}
         self.challenge = None
         self.response = None
 
@@ -601,8 +640,8 @@ class EGZKProof(object):
         proof = cls()
 
         # compute A = little_g^w, B=little_h^w
-        proof.commitment['A'] = pow(little_g, w, p)
-        proof.commitment['B'] = pow(little_h, w, p)
+        proof.commitment["A"] = pow(little_g, w, p)
+        proof.commitment["B"] = pow(little_h, w, p)
 
         # get challenge
         proof.challenge = challenge_generator(proof.commitment)
@@ -616,18 +655,21 @@ class EGZKProof(object):
     @classmethod
     def from_dict(cls, d):
         p = cls()
-        p.commitment = {'A': int(d['commitment']['A']), 'B': int(d['commitment']['B'])}
-        p.challenge = int(d['challenge'])
-        p.response = int(d['response'])
+        p.commitment = {"A": int(d["commitment"]["A"]), "B": int(d["commitment"]["B"])}
+        p.challenge = int(d["challenge"])
+        p.response = int(d["response"])
         return p
 
     fromJSONDict = from_dict
 
     def to_dict(self):
         return {
-            'commitment': {'A': str(self.commitment['A']), 'B': str(self.commitment['B'])},
-            'challenge': str(self.challenge),
-            'response': str(self.response)
+            "commitment": {
+                "A": str(self.commitment["A"]),
+                "B": str(self.commitment["B"]),
+            },
+            "challenge": str(self.challenge),
+            "response": str(self.response),
         }
 
     toJSONDict = to_dict
@@ -637,21 +679,27 @@ class EGZKProof(object):
         Verify a DH tuple proof
         """
         # check that A, B are in the correct group
-        if not (pow(self.commitment['A'], self.pk.q, self.pk.p) == 1
-                and pow(self.commitment['B'], self.pk.q, self.pk.p) == 1):
+        if not (
+            pow(self.commitment["A"], self.pk.q, self.pk.p) == 1
+            and pow(self.commitment["B"], self.pk.q, self.pk.p) == 1
+        ):
             return False
 
         # check that little_g^response = A * big_g^challenge
-        first_check = (pow(little_g, self.response, p) == ((pow(big_g, self.challenge, p) * self.commitment['A']) % p))
+        first_check = pow(little_g, self.response, p) == (
+            (pow(big_g, self.challenge, p) * self.commitment["A"]) % p
+        )
 
         # check that little_h^response = B * big_h^challenge
-        second_check = (pow(little_h, self.response, p) == ((pow(big_h, self.challenge, p) * self.commitment['B']) % p))
+        second_check = pow(little_h, self.response, p) == (
+            (pow(big_h, self.challenge, p) * self.commitment["B"]) % p
+        )
 
         # check the challenge?
         third_check = True
 
         if challenge_generator:
-            third_check = (self.challenge == challenge_generator(self.commitment))
+            third_check = self.challenge == challenge_generator(self.commitment)
 
         return first_check and second_check and third_check
 
@@ -679,13 +727,17 @@ class DLogProof(object):
         self.response = response
 
     def to_dict(self):
-        return {'challenge': str(self.challenge), 'commitment': str(self.commitment), 'response': str(self.response)}
+        return {
+            "challenge": str(self.challenge),
+            "commitment": str(self.commitment),
+            "response": str(self.response),
+        }
 
     toJSONDict = to_dict
 
     @classmethod
     def from_dict(cls, d):
-        dlp = cls(int(d['commitment']), int(d['challenge']), int(d['response']))
+        dlp = cls(int(d["commitment"]), int(d["challenge"]), int(d["response"]))
         return dlp
 
     fromJSONDict = from_dict
@@ -694,11 +746,11 @@ class DLogProof(object):
 def EG_disjunctive_challenge_generator(commitments):
     array_to_hash = []
     for commitment in commitments:
-        array_to_hash.append(str(commitment['A']))
-        array_to_hash.append(str(commitment['B']))
+        array_to_hash.append(str(commitment["A"]))
+        array_to_hash.append(str(commitment["B"]))
 
     string_to_hash = ",".join(array_to_hash)
-    return int(SHA1.new(bytes(string_to_hash, 'utf-8')).hexdigest(), 16)
+    return int(SHA1.new(bytes(string_to_hash, "utf-8")).hexdigest(), 16)
 
 
 # a challenge generator for Fiat-Shamir with A,B commitment
@@ -708,4 +760,4 @@ def EG_fiatshamir_challenge_generator(commitment):
 
 def DLog_challenge_generator(commitment):
     string_to_hash = str(commitment)
-    return int(SHA1.new(bytes(string_to_hash, 'utf-8')).hexdigest(), 16)
+    return int(SHA1.new(bytes(string_to_hash, "utf-8")).hexdigest(), 16)

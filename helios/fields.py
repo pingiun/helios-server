@@ -27,4 +27,3 @@ class SplitDateTimeField(fields.MultiValueField):
                 return None
             return datetime.datetime.combine(*data_list)
         return None
-

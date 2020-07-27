@@ -1,49 +1,66 @@
 from django.conf import settings
 
 _enabled = settings.AUTH_ENABLED_SYSTEMS or None
+
+
 def _is_enabled(system):
     return _enabled is None or system in _enabled
 
+
 AUTH_SYSTEMS = {}
 
-if _is_enabled('twitter'):
+if _is_enabled("twitter"):
     from . import twitter
-    AUTH_SYSTEMS['twitter'] = twitter
 
-if _is_enabled('linkedin'):
+    AUTH_SYSTEMS["twitter"] = twitter
+
+if _is_enabled("linkedin"):
     from . import linkedin
-    AUTH_SYSTEMS['linkedin'] = linkedin
 
-if _is_enabled('password'):
+    AUTH_SYSTEMS["linkedin"] = linkedin
+
+if _is_enabled("password"):
     from . import password
-    AUTH_SYSTEMS['password'] = password
 
-if _is_enabled('cas'):
+    AUTH_SYSTEMS["password"] = password
+
+if _is_enabled("cas"):
     from . import cas
-    AUTH_SYSTEMS['cas'] = cas
 
-if _is_enabled('facebook'):
+    AUTH_SYSTEMS["cas"] = cas
+
+if _is_enabled("facebook"):
     from . import facebook
-    AUTH_SYSTEMS['facebook'] = facebook
 
-if _is_enabled('google'):
+    AUTH_SYSTEMS["facebook"] = facebook
+
+if _is_enabled("google"):
     from . import google
-    AUTH_SYSTEMS['google'] = google
 
-if _is_enabled('yahoo'):
+    AUTH_SYSTEMS["google"] = google
+
+if _is_enabled("yahoo"):
     from . import yahoo
-    AUTH_SYSTEMS['yahoo'] = yahoo
 
-if _is_enabled('clever'):
+    AUTH_SYSTEMS["yahoo"] = yahoo
+
+if _is_enabled("clever"):
     from . import clever
-    AUTH_SYSTEMS['clever'] = clever
+
+    AUTH_SYSTEMS["clever"] = clever
 
 # not ready
-#import live
-#AUTH_SYSTEMS['live'] = live
+# import live
+# AUTH_SYSTEMS['live'] = live
+
 
 def can_check_constraint(auth_system):
-    return auth_system in AUTH_SYSTEMS and hasattr(AUTH_SYSTEMS[auth_system], 'check_constraint')
+    return auth_system in AUTH_SYSTEMS and hasattr(
+        AUTH_SYSTEMS[auth_system], "check_constraint"
+    )
+
 
 def can_list_categories(auth_system):
-    return auth_system in AUTH_SYSTEMS and hasattr(AUTH_SYSTEMS[auth_system], 'list_categories')
+    return auth_system in AUTH_SYSTEMS and hasattr(
+        AUTH_SYSTEMS[auth_system], "list_categories"
+    )

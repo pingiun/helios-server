@@ -22,18 +22,18 @@ from helios.models import User, Voter, VoterFile
 ## UTF8 craziness for CSV
 ##
 
+
 def unicode_csv_reader(unicode_csv_data, dialect=csv.excel, **kwargs):
     # csv.py doesn't do Unicode; encode temporarily as UTF-8:
-    csv_reader = csv.reader(utf_8_encoder(unicode_csv_data),
-                            dialect=dialect, **kwargs)
+    csv_reader = csv.reader(utf_8_encoder(unicode_csv_data), dialect=dialect, **kwargs)
     for row in csv_reader:
         # decode UTF-8 back to Unicode, cell by cell:
-        yield [str(cell, 'utf-8') for cell in row]
+        yield [str(cell, "utf-8") for cell in row]
 
 
 def utf_8_encoder(unicode_csv_data):
     for line in unicode_csv_data:
-        yield line.encode('utf-8')
+        yield line.encode("utf-8")
 
 
 def process_csv_file(election, f):
@@ -57,8 +57,15 @@ def process_csv_file(election, f):
             name = voter[2]
 
         # create the user
-        user = User.update_or_create(user_type='password', user_id=voter_id,
-                                     info={'password': helios_utils.random_string(10), 'email': email, 'name': name})
+        user = User.update_or_create(
+            user_type="password",
+            user_id=voter_id,
+            info={
+                "password": helios_utils.random_string(10),
+                "email": email,
+                "name": name,
+            },
+        )
         user.save()
 
         # does voter for this user already exist
@@ -67,26 +74,36 @@ def process_csv_file(election, f):
         # create the voter
         if not voter:
             voter_uuid = str(uuid.uuid1())
-            voter = Voter(uuid=voter_uuid, voter_type='password', voter_id=voter_id, name=name, election=election)
+            voter = Voter(
+                uuid=voter_uuid,
+                voter_type="password",
+                voter_id=voter_id,
+                name=name,
+                election=election,
+            )
             voter.save()
 
     return num_voters
 
 
 class Command(BaseCommand):
-    args = ''
-    help = 'load up voters from unprocessed voter files'
+    args = ""
+    help = "load up voters from unprocessed voter files"
 
     def handle(self, *args, **options):
         # load up the voter files in order of last uploaded
-        files_to_process = VoterFile.objects.filter(processing_started_at=None).order_by('uploaded_at')
+        files_to_process = VoterFile.objects.filter(
+            processing_started_at=None
+        ).order_by("uploaded_at")
 
         for file_to_process in files_to_process:
             # mark processing begins
             file_to_process.processing_started_at = datetime.datetime.utcnow()
             file_to_process.save()
 
-            num_voters = process_csv_file(file_to_process.election, file_to_process.voter_file)
+            num_voters = process_csv_file(
+                file_to_process.election, file_to_process.voter_file
+            )
 
             # mark processing done
             file_to_process.processing_finished_at = datetime.datetime.utcnow()

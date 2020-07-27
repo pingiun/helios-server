@@ -16,7 +16,7 @@ class JSONField(models.TextField):
     """
     JSONField is a generic textfield that neatly serializes/unserializes
     JSON objects seamlessly.
-    
+
     deserialization_params added on 2011-01-09 to provide additional hints at deserialization time
     """
 
@@ -44,7 +44,9 @@ class JSONField(models.TextField):
             return None
 
         if self.json_type and parsed_value:
-            parsed_value = self.json_type.fromJSONDict(parsed_value, **self.deserialization_params)
+            parsed_value = self.json_type.fromJSONDict(
+                parsed_value, **self.deserialization_params
+            )
 
         return parsed_value
 
@@ -65,7 +67,6 @@ class JSONField(models.TextField):
             the_dict = value
 
         return json.dumps(the_dict, cls=DjangoJSONEncoder)
-
 
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)

@@ -31,6 +31,6 @@ def from_json(value):
 
 
 def JSONFiletoDict(filename):
-    with open(filename, 'r') as f:
+    with open(filename, "r") as f:
         content = f.read()
     return from_json(content)

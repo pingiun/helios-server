@@ -16,7 +16,7 @@ class LDObjectField(models.TextField):
     """
     LDObject is a generic textfield that neatly serializes/unserializes
     JSON objects seamlessly.
-    
+
     deserialization_params added on 2011-01-09 to provide additional hints at deserialization time
     """
 
@@ -42,7 +42,9 @@ class LDObjectField(models.TextField):
             return None
 
         # we give the wrapped object back because we're not dealing with serialization types
-        return_val = LDObject.fromDict(parsed_value, type_hint=self.type_hint).wrapped_obj
+        return_val = LDObject.fromDict(
+            parsed_value, type_hint=self.type_hint
+        ).wrapped_obj
         return return_val
 
     def get_prep_value(self, value):

@@ -19,6 +19,7 @@ class HeliosObject(object):
     crypto objects are kept as full-blown crypto objects, serialized to jsonobjects on the way out
     and deserialized from jsonobjects on the way in
     """
+
     FIELDS = []
     JSON_FIELDS = None
 
@@ -26,7 +27,7 @@ class HeliosObject(object):
         self.set_from_args(**kwargs)
 
         # generate uuid if need be
-        if 'uuid' in self.FIELDS and (not hasattr(self, 'uuid') or self.uuid is None):
+        if "uuid" in self.FIELDS and (not hasattr(self, "uuid") or self.uuid is None):
             self.uuid = str(uuid.uuid4())
 
     def set_from_args(self, **kwargs):
@@ -49,7 +50,7 @@ class HeliosObject(object):
 
     def toJSONDict(self, alternate_fields=None):
         val = {}
-        for f in (alternate_fields or self.JSON_FIELDS or self.FIELDS):
+        for f in alternate_fields or self.JSON_FIELDS or self.FIELDS:
             val[f] = self.process_value_out(f, getattr(self, f))
         return val
 
@@ -116,7 +117,7 @@ class HeliosObject(object):
         return None
 
     def __eq__(self, other):
-        if not hasattr(self, 'uuid'):
+        if not hasattr(self, "uuid"):
             return super(HeliosObject, self) == other
 
         return other is not None and self.uuid == other.uuid
@@ -127,10 +128,17 @@ class EncryptedAnswer(HeliosObject):
     An encrypted answer to a single election question
     """
 
-    FIELDS = ['choices', 'individual_proofs', 'overall_proof', 'randomness', 'answer']
+    FIELDS = ["choices", "individual_proofs", "overall_proof", "randomness", "answer"]
 
     # FIXME: remove this constructor and use only named-var constructor from HeliosObject
-    def __init__(self, choices=None, individual_proofs=None, overall_proof=None, randomness=None, answer=None):
+    def __init__(
+        self,
+        choices=None,
+        individual_proofs=None,
+        overall_proof=None,
+        randomness=None,
+        answer=None,
+    ):
         self.choices = choices
         self.individual_proofs = individual_proofs
         self.overall_proof = overall_proof
@@ -158,7 +166,7 @@ class EncryptedAnswer(HeliosObject):
         this applies only if the explicit answers and randomness factors are given
         we do not verify the proofs here, that is the verify() method
         """
-        if not hasattr(self, 'answer'):
+        if not hasattr(self, "answer"):
             return False
 
         for choice_num in range(len(self.choices)):
@@ -184,8 +192,11 @@ class EncryptedAnswer(HeliosObject):
                 return False
 
             # verify the proof on the encryption of that choice
-            if not choice.verify_disjunctive_encryption_proof(possible_plaintexts, individual_proof,
-                                                              algs.EG_disjunctive_challenge_generator):
+            if not choice.verify_disjunctive_encryption_proof(
+                possible_plaintexts,
+                individual_proof,
+                algs.EG_disjunctive_challenge_generator,
+            ):
                 return False
 
             # compute homomorphic sum if needed
@@ -197,26 +208,29 @@ class EncryptedAnswer(HeliosObject):
             sum_possible_plaintexts = self.generate_plaintexts(pk, min=min, max=max)
 
             # verify the sum
-            return homomorphic_sum.verify_disjunctive_encryption_proof(sum_possible_plaintexts, self.overall_proof,
-                                                                       algs.EG_disjunctive_challenge_generator)
+            return homomorphic_sum.verify_disjunctive_encryption_proof(
+                sum_possible_plaintexts,
+                self.overall_proof,
+                algs.EG_disjunctive_challenge_generator,
+            )
         else:
             # approval voting, no need for overall proof verification
             return True
 
     def toJSONDict(self, with_randomness=False):
         value = {
-            'choices': [c.to_dict() for c in self.choices],
-            'individual_proofs': [p.to_dict() for p in self.individual_proofs]
+            "choices": [c.to_dict() for c in self.choices],
+            "individual_proofs": [p.to_dict() for p in self.individual_proofs],
         }
 
         if self.overall_proof:
-            value['overall_proof'] = self.overall_proof.to_dict()
+            value["overall_proof"] = self.overall_proof.to_dict()
         else:
-            value['overall_proof'] = None
+            value["overall_proof"] = None
 
         if with_randomness:
-            value['randomness'] = [str(r) for r in self.randomness]
-            value['answer'] = self.answer
+            value["randomness"] = [str(r) for r in self.randomness]
+            value["answer"] = self.answer
 
         return value
 
@@ -224,17 +238,19 @@ class EncryptedAnswer(HeliosObject):
     def fromJSONDict(cls, d, pk=None):
         ea = cls()
 
-        ea.choices = [algs.EGCiphertext.from_dict(c, pk) for c in d['choices']]
-        ea.individual_proofs = [algs.EGZKDisjunctiveProof.from_dict(p) for p in d['individual_proofs']]
+        ea.choices = [algs.EGCiphertext.from_dict(c, pk) for c in d["choices"]]
+        ea.individual_proofs = [
+            algs.EGZKDisjunctiveProof.from_dict(p) for p in d["individual_proofs"]
+        ]
 
-        if d['overall_proof']:
-            ea.overall_proof = algs.EGZKDisjunctiveProof.from_dict(d['overall_proof'])
+        if d["overall_proof"]:
+            ea.overall_proof = algs.EGZKDisjunctiveProof.from_dict(d["overall_proof"])
         else:
             ea.overall_proof = None
 
-        if 'randomness' in d:
-            ea.randomness = [int(r) for r in d['randomness']]
-            ea.answer = d['answer']
+        if "randomness" in d:
+            ea.randomness = [int(r) for r in d["randomness"]]
+            ea.answer = d["answer"]
 
         return ea
 
@@ -246,7 +262,7 @@ class EncryptedAnswer(HeliosObject):
         produce an EncryptedAnswer that works.
         """
         question = election.questions[question_num]
-        answers = question['answers']
+        answers = question["answers"]
         pk = election.public_key
 
         # initialize choices, individual proofs, randomness and overall proof
@@ -266,9 +282,9 @@ class EncryptedAnswer(HeliosObject):
 
         # min and max for number of answers, useful later
         min_answers = 0
-        if 'min' in question:
-            min_answers = question['min']
-        max_answers = question['max']
+        if "min" in question:
+            min_answers = question["min"]
+        max_answers = question["max"]
 
         # go through each possible answer and encrypt either a g^0 or a g^1.
         for answer_num in range(len(answers)):
@@ -281,14 +297,19 @@ class EncryptedAnswer(HeliosObject):
 
             # randomness and encryption
             randomness[answer_num] = utils.random.mpz_lt(pk.q)
-            choices[answer_num] = pk.encrypt_with_r(plaintexts[plaintext_index], randomness[answer_num])
+            choices[answer_num] = pk.encrypt_with_r(
+                plaintexts[plaintext_index], randomness[answer_num]
+            )
 
             # generate proof
-            individual_proofs[answer_num] = choices[answer_num].generate_disjunctive_encryption_proof(plaintexts,
-                                                                                                      plaintext_index,
-                                                                                                      randomness[
-                                                                                                          answer_num],
-                                                                                                      algs.EG_disjunctive_challenge_generator)
+            individual_proofs[answer_num] = choices[
+                answer_num
+            ].generate_disjunctive_encryption_proof(
+                plaintexts,
+                plaintext_index,
+                randomness[answer_num],
+                algs.EG_disjunctive_challenge_generator,
+            )
 
             # sum things up homomorphically if needed
             if max_answers is not None:
@@ -302,49 +323,76 @@ class EncryptedAnswer(HeliosObject):
             raise Exception("Need to select at least %s answer(s)" % min_answers)
 
         if max_answers is not None:
-            sum_plaintexts = cls.generate_plaintexts(pk, min=min_answers, max=max_answers)
+            sum_plaintexts = cls.generate_plaintexts(
+                pk, min=min_answers, max=max_answers
+            )
 
             # need to subtract the min from the offset
-            overall_proof = homomorphic_sum.generate_disjunctive_encryption_proof(sum_plaintexts,
-                                                                                  num_selected_answers - min_answers,
-                                                                                  randomness_sum,
-                                                                                  algs.EG_disjunctive_challenge_generator);
+            overall_proof = homomorphic_sum.generate_disjunctive_encryption_proof(
+                sum_plaintexts,
+                num_selected_answers - min_answers,
+                randomness_sum,
+                algs.EG_disjunctive_challenge_generator,
+            )
         else:
             # approval voting
             overall_proof = None
 
-        return cls(choices, individual_proofs, overall_proof, randomness, answer_indexes)
+        return cls(
+            choices, individual_proofs, overall_proof, randomness, answer_indexes
+        )
 
 
 class EncryptedVote(HeliosObject):
     """
     An encrypted ballot
     """
-    FIELDS = ['encrypted_answers', 'election_hash', 'election_uuid']
+
+    FIELDS = ["encrypted_answers", "election_hash", "election_uuid"]
 
     def verify(self, election):
         # correct number of answers
         # noinspection PyUnresolvedReferences
-        n_answers = len(self.encrypted_answers) if self.encrypted_answers is not None else 0
+        n_answers = (
+            len(self.encrypted_answers) if self.encrypted_answers is not None else 0
+        )
         n_questions = len(election.questions) if election.questions is not None else 0
         if n_answers != n_questions:
-            logging.error(f"Incorrect number of answers ({n_answers}) vs questions ({n_questions})")
+            logging.error(
+                f"Incorrect number of answers ({n_answers}) vs questions ({n_questions})"
+            )
             return False
 
         # check hash
         # noinspection PyUnresolvedReferences
-        our_election_hash = self.election_hash if isinstance(self.election_hash, str) else self.election_hash.decode()
-        actual_election_hash = election.hash if isinstance(election.hash, str) else election.hash.decode()
+        our_election_hash = (
+            self.election_hash
+            if isinstance(self.election_hash, str)
+            else self.election_hash.decode()
+        )
+        actual_election_hash = (
+            election.hash if isinstance(election.hash, str) else election.hash.decode()
+        )
         if our_election_hash != actual_election_hash:
-            logging.error(f"Incorrect election_hash {our_election_hash} vs {actual_election_hash} ")
+            logging.error(
+                f"Incorrect election_hash {our_election_hash} vs {actual_election_hash} "
+            )
             return False
 
         # check ID
         # noinspection PyUnresolvedReferences
-        our_election_uuid = self.election_uuid if isinstance(self.election_uuid, str) else self.election_uuid.decode()
-        actual_election_uuid = election.uuid if isinstance(election.uuid, str) else election.uuid.decode()
+        our_election_uuid = (
+            self.election_uuid
+            if isinstance(self.election_uuid, str)
+            else self.election_uuid.decode()
+        )
+        actual_election_uuid = (
+            election.uuid if isinstance(election.uuid, str) else election.uuid.decode()
+        )
         if our_election_uuid != actual_election_uuid:
-            logging.error(f"Incorrect election_uuid {our_election_uuid} vs {actual_election_uuid} ")
+            logging.error(
+                f"Incorrect election_uuid {our_election_uuid} vs {actual_election_uuid} "
+            )
             return False
 
         # check proofs on all of answers
@@ -353,10 +401,10 @@ class EncryptedVote(HeliosObject):
 
             question = election.questions[question_num]
             min_answers = 0
-            if 'min' in question:
-                min_answers = question['min']
+            if "min" in question:
+                min_answers = question["min"]
 
-            if not ea.verify(election.public_key, min=min_answers, max=question['max']):
+            if not ea.verify(election.public_key, min=min_answers, max=question["max"]):
                 return False
 
         return True
@@ -366,18 +414,20 @@ class EncryptedVote(HeliosObject):
 
     def toJSONDict(self, with_randomness=False):
         return {
-            'answers': [a.toJSONDict(with_randomness) for a in self.encrypted_answers],
-            'election_hash': self.election_hash,
-            'election_uuid': self.election_uuid
+            "answers": [a.toJSONDict(with_randomness) for a in self.encrypted_answers],
+            "election_hash": self.election_hash,
+            "election_uuid": self.election_uuid,
         }
 
     @classmethod
     def fromJSONDict(cls, d, pk=None):
         ev = cls()
 
-        ev.encrypted_answers = [EncryptedAnswer.fromJSONDict(ea, pk) for ea in d['answers']]
-        ev.election_hash = d['election_hash']
-        ev.election_uuid = d['election_uuid']
+        ev.encrypted_answers = [
+            EncryptedAnswer.fromJSONDict(ea, pk) for ea in d["answers"]
+        ]
+        ev.election_hash = d["election_hash"]
+        ev.election_uuid = d["election_uuid"]
 
         return ev
 
@@ -386,9 +436,17 @@ class EncryptedVote(HeliosObject):
         pk = election.public_key
 
         # each answer is an index into the answer array
-        encrypted_answers = [EncryptedAnswer.fromElectionAndAnswer(election, answer_num, answers[answer_num]) for
-                             answer_num in range(len(answers))]
-        return cls(encrypted_answers=encrypted_answers, election_hash=election.hash, election_uuid=election.uuid)
+        encrypted_answers = [
+            EncryptedAnswer.fromElectionAndAnswer(
+                election, answer_num, answers[answer_num]
+            )
+            for answer_num in range(len(answers))
+        ]
+        return cls(
+            encrypted_answers=encrypted_answers,
+            election_hash=election.hash,
+            election_uuid=election.uuid,
+        )
 
 
 def one_question_winner(question, result, num_cast_votes):
@@ -400,27 +458,56 @@ def one_question_winner(question, result, num_cast_votes):
     counts.reverse()
 
     # if there's a max > 1, we assume that the top MAX win
-    if question['max'] > 1:
-        return [c[0] for c in counts[:question['max']]]
+    if question["max"] > 1:
+        return [c[0] for c in counts[: question["max"]]]
 
     # if max = 1, then depends on absolute or relative
-    if question['result_type'] == 'absolute':
+    if question["result_type"] == "absolute":
         if counts[0][1] >= (num_cast_votes / 2 + 1):
             return [counts[0][0]]
         else:
             return []
 
-    if question['result_type'] == 'relative':
+    if question["result_type"] == "relative":
         return [counts[0][0]]
 
 
 class Election(HeliosObject):
-    FIELDS = ['uuid', 'questions', 'name', 'short_name', 'description', 'voters_hash', 'openreg',
-              'frozen_at', 'public_key', 'private_key', 'cast_url', 'result', 'result_proof', 'use_voter_aliases',
-              'voting_starts_at', 'voting_ends_at', 'election_type']
+    FIELDS = [
+        "uuid",
+        "questions",
+        "name",
+        "short_name",
+        "description",
+        "voters_hash",
+        "openreg",
+        "frozen_at",
+        "public_key",
+        "private_key",
+        "cast_url",
+        "result",
+        "result_proof",
+        "use_voter_aliases",
+        "voting_starts_at",
+        "voting_ends_at",
+        "election_type",
+    ]
 
-    JSON_FIELDS = ['uuid', 'questions', 'name', 'short_name', 'description', 'voters_hash', 'openreg',
-                   'frozen_at', 'public_key', 'cast_url', 'use_voter_aliases', 'voting_starts_at', 'voting_ends_at']
+    JSON_FIELDS = [
+        "uuid",
+        "questions",
+        "name",
+        "short_name",
+        "description",
+        "voters_hash",
+        "openreg",
+        "frozen_at",
+        "public_key",
+        "cast_url",
+        "use_voter_aliases",
+        "voting_starts_at",
+        "voting_ends_at",
+    ]
 
     # need to add in v3.1: use_advanced_audit_features, election_type, and probably more
 
@@ -428,22 +515,30 @@ class Election(HeliosObject):
         return Tally(election=self)
 
     def _process_value_in(self, field_name, field_value):
-        if field_name == 'frozen_at' or field_name == 'voting_starts_at' or field_name == 'voting_ends_at':
+        if (
+            field_name == "frozen_at"
+            or field_name == "voting_starts_at"
+            or field_name == "voting_ends_at"
+        ):
             if isinstance(field_value, str):
-                return datetime.datetime.strptime(field_value, '%Y-%m-%d %H:%M:%S')
+                return datetime.datetime.strptime(field_value, "%Y-%m-%d %H:%M:%S")
 
-        if field_name == 'public_key':
+        if field_name == "public_key":
             return algs.EGPublicKey.fromJSONDict(field_value)
 
-        if field_name == 'private_key':
+        if field_name == "private_key":
             return algs.EGSecretKey.fromJSONDict(field_value)
 
     def _process_value_out(self, field_name, field_value):
         # the date
-        if field_name == 'frozen_at' or field_name == 'voting_starts_at' or field_name == 'voting_ends_at':
+        if (
+            field_name == "frozen_at"
+            or field_name == "voting_starts_at"
+            or field_name == "voting_ends_at"
+        ):
             return str(field_value)
 
-        if field_name == 'public_key' or field_name == 'private_key':
+        if field_name == "public_key" or field_name == "private_key":
             return field_value.toJSONDict()
 
     @property
@@ -460,8 +555,10 @@ class Election(HeliosObject):
         returns an array of winners for each question, aka an array of arrays.
         assumes that if there is a max to the question, that's how many winners there are.
         """
-        return [one_question_winner(self.questions[i], self.result[i], self.num_cast_votes) for i in
-                range(len(self.questions))]
+        return [
+            one_question_winner(self.questions[i], self.result[i], self.num_cast_votes)
+            for i in range(len(self.questions))
+        ]
 
     @property
     def pretty_result(self):
@@ -480,12 +577,16 @@ class Election(HeliosObject):
             pretty_question = []
 
             # go through answers
-            for j in range(len(q['answers'])):
-                a = q['answers'][j]
+            for j in range(len(q["answers"])):
+                a = q["answers"][j]
                 count = raw_result[i][j]
-                pretty_question.append({'answer': a, 'count': count, 'winner': (j in winners[i])})
+                pretty_question.append(
+                    {"answer": a, "count": count, "winner": (j in winners[i])}
+                )
 
-            prettified_result.append({'question': q['short_name'], 'answers': pretty_question})
+            prettified_result.append(
+                {"question": q["short_name"], "answers": pretty_question}
+            )
 
         return prettified_result
 
@@ -494,11 +595,12 @@ class Voter(HeliosObject):
     """
     A voter in an election
     """
-    FIELDS = ['election_uuid', 'uuid', 'voter_type', 'voter_id', 'name', 'alias']
-    JSON_FIELDS = ['election_uuid', 'uuid', 'voter_type', 'voter_id_hash', 'name']
+
+    FIELDS = ["election_uuid", "uuid", "voter_type", "voter_id", "name", "alias"]
+    JSON_FIELDS = ["election_uuid", "uuid", "voter_type", "voter_id_hash", "name"]
 
     # alternative, for when the voter is aliased
-    ALIASED_VOTER_JSON_FIELDS = ['election_uuid', 'uuid', 'alias']
+    ALIASED_VOTER_JSON_FIELDS = ["election_uuid", "uuid", "alias"]
 
     def toJSONDict(self):
         if self.alias is not None:
@@ -520,17 +622,26 @@ class Trustee(HeliosObject):
     """
     a trustee
     """
-    FIELDS = ['uuid', 'public_key', 'public_key_hash', 'pok', 'decryption_factors', 'decryption_proofs', 'email']
+
+    FIELDS = [
+        "uuid",
+        "public_key",
+        "public_key_hash",
+        "pok",
+        "decryption_factors",
+        "decryption_proofs",
+        "email",
+    ]
 
     def _process_value_in(self, field_name, field_value):
-        if field_name == 'public_key':
+        if field_name == "public_key":
             return algs.EGPublicKey.fromJSONDict(field_value)
 
-        if field_name == 'pok':
+        if field_name == "pok":
             return algs.DLogProof.fromJSONDict(field_value)
 
     def _process_value_out(self, field_name, field_value):
-        if field_name == 'public_key' or field_name == 'pok':
+        if field_name == "public_key" or field_name == "pok":
             return field_value.toJSONDict()
 
 
@@ -538,7 +649,8 @@ class CastVote(HeliosObject):
     """
     A cast vote, which includes an encrypted vote and some cast metadata
     """
-    FIELDS = ['vote', 'cast_at', 'voter_uuid', 'voter_hash', 'vote_hash']
+
+    FIELDS = ["vote", "cast_at", "voter_uuid", "voter_hash", "vote_hash"]
 
     def __init__(self, *args, **kwargs):
         super(CastVote, self).__init__(*args, **kwargs)
@@ -554,7 +666,7 @@ class CastVote(HeliosObject):
     def toJSONDict(self, include_vote=True):
         result = super(CastVote, self).toJSONDict()
         if not include_vote:
-            del result['vote']
+            del result["vote"]
         return result
 
     @classmethod
@@ -565,19 +677,19 @@ class CastVote(HeliosObject):
         return obj
 
     def _process_value_in(self, field_name, field_value):
-        if field_name == 'cast_at':
+        if field_name == "cast_at":
             if isinstance(field_value, str):
-                return datetime.datetime.strptime(field_value, '%Y-%m-%d %H:%M:%S')
+                return datetime.datetime.strptime(field_value, "%Y-%m-%d %H:%M:%S")
 
-        if field_name == 'vote':
+        if field_name == "vote":
             return EncryptedVote.fromJSONDict(field_value, self.election.public_key)
 
     def _process_value_out(self, field_name, field_value):
         # the date
-        if field_name == 'cast_at':
+        if field_name == "cast_at":
             return str(field_value)
 
-        if field_name == 'vote':
+        if field_name == "vote":
             return field_value.toJSONDict()
 
     def issues(self, election):
@@ -588,7 +700,9 @@ class CastVote(HeliosObject):
 
         # check the election
         if self.vote.election_uuid != election.uuid:
-            issues.append("the vote's election UUID does not match the election for which this vote is being cast")
+            issues.append(
+                "the vote's election UUID does not match the election for which this vote is being cast"
+            )
 
         return issues
 
@@ -631,13 +745,13 @@ class Tally(HeliosObject):
     A running homomorphic tally
     """
 
-    FIELDS = ['num_tallied', 'tally']
-    JSON_FIELDS = ['num_tallied', 'tally']
+    FIELDS = ["num_tallied", "tally"]
+    JSON_FIELDS = ["num_tallied", "tally"]
 
     def __init__(self, *args, **kwargs):
         super(Tally, self).__init__(*args, **kwargs)
 
-        self.election = kwargs.get('election', None)
+        self.election = kwargs.get("election", None)
 
         if self.election:
             self.init_election(self.election)
@@ -660,7 +774,7 @@ class Tally(HeliosObject):
         self.public_key = election.public_key
 
         if not self.tally:
-            self.tally = [[0 for _ in q['answers']] for q in self.questions]
+            self.tally = [[0 for _ in q["answers"]] for q in self.questions]
 
     def add_vote_batch(self, encrypted_votes, verify_p=True):
         """
@@ -674,20 +788,24 @@ class Tally(HeliosObject):
         # do we verify?
         if verify_p:
             if not encrypted_vote.verify(self.election):
-                raise Exception('Bad Vote')
+                raise Exception("Bad Vote")
 
         # for each question
         for question_num in range(len(self.questions)):
             question = self.questions[question_num]
-            answers = question['answers']
+            answers = question["answers"]
 
             # for each possible answer to each question
             for answer_num in range(len(answers)):
                 # do the homomorphic addition into the tally
-                enc_vote_choice = encrypted_vote.encrypted_answers[question_num].choices[answer_num]
+                enc_vote_choice = encrypted_vote.encrypted_answers[
+                    question_num
+                ].choices[answer_num]
                 enc_vote_choice.pk = self.public_key
-                self.tally[question_num][answer_num] = encrypted_vote.encrypted_answers[question_num].choices[
-                                                           answer_num] * self.tally[question_num][answer_num]
+                self.tally[question_num][answer_num] = (
+                    encrypted_vote.encrypted_answers[question_num].choices[answer_num]
+                    * self.tally[question_num][answer_num]
+                )
 
         self.num_tallied += 1
 
@@ -701,13 +819,15 @@ class Tally(HeliosObject):
         decryption_proof = []
 
         for question_num, question in enumerate(self.questions):
-            answers = question['answers']
+            answers = question["answers"]
             question_factors = []
             question_proof = []
 
             for answer_num, answer in enumerate(answers):
                 # do decryption and proof of it
-                dec_factor, proof = sk.decryption_factor_and_proof(self.tally[question_num][answer_num])
+                dec_factor, proof = sk.decryption_factor_and_proof(
+                    self.tally[question_num][answer_num]
+                )
 
                 # look up appropriate discrete log
                 # this is the string conversion
@@ -734,13 +854,15 @@ class Tally(HeliosObject):
 
         for question_num in range(len(self.questions)):
             question = self.questions[question_num]
-            answers = question['answers']
+            answers = question["answers"]
             question_tally = []
             question_proof = []
 
             for answer_num in range(len(answers)):
                 # do decryption and proof of it
-                plaintext, proof = sk.prove_decryption(self.tally[question_num][answer_num])
+                plaintext, proof = sk.prove_decryption(
+                    self.tally[question_num][answer_num]
+                )
 
                 # look up appropriate discrete log
                 question_tally.append(discrete_logs[plaintext])
@@ -751,7 +873,9 @@ class Tally(HeliosObject):
 
         return decrypted_tally, decryption_proof
 
-    def verify_decryption_proofs(self, decryption_factors, decryption_proofs, public_key, challenge_generator):
+    def verify_decryption_proofs(
+        self, decryption_factors, decryption_proofs, public_key, challenge_generator
+    ):
         """
         decryption_factors is a list of lists of dec factors
         decryption_proofs are the corresponding proofs
@@ -765,9 +889,15 @@ class Tally(HeliosObject):
                 proof = algs.EGZKProof.fromJSONDict(decryption_proofs[q_num][a_num])
 
                 # check that g, alpha, y, dec_factor is a DH tuple
-                if not proof.verify(public_key.g, answer_tally.alpha, public_key.y,
-                                    int(decryption_factors[q_num][a_num]), public_key.p, public_key.q,
-                                    challenge_generator):
+                if not proof.verify(
+                    public_key.g,
+                    answer_tally.alpha,
+                    public_key.y,
+                    int(decryption_factors[q_num][a_num]),
+                    public_key.p,
+                    public_key.q,
+                    challenge_generator,
+                ):
                     return False
 
         return True
@@ -793,7 +923,9 @@ class Tally(HeliosObject):
             for a_num, a in enumerate(q):
                 # coalesce the decryption factors into one list
                 dec_factor_list = [df[q_num][a_num] for df in decryption_factors]
-                raw_value = self.tally[q_num][a_num].decrypt(dec_factor_list, public_key)
+                raw_value = self.tally[q_num][a_num].decrypt(
+                    dec_factor_list, public_key
+                )
 
                 q_result.append(dlog_table.lookup(raw_value))
 
@@ -802,9 +934,9 @@ class Tally(HeliosObject):
         return result
 
     def _process_value_in(self, field_name, field_value):
-        if field_name == 'tally':
+        if field_name == "tally":
             return [[algs.EGCiphertext.fromJSONDict(a) for a in q] for q in field_value]
 
     def _process_value_out(self, field_name, field_value):
-        if field_name == 'tally':
+        if field_name == "tally":
             return [[a.toJSONDict() for a in q] for q in field_value]
