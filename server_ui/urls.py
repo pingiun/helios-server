@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import url
+from django.urls import re_path
 
 from .views import home, about, docs, faq, privacy
 
 urlpatterns = [
-    url(r"^$", home),
-    url(r"^about$", about),
-    url(r"^docs$", docs),
-    url(r"^faq$", faq),
-    url(r"^privacy$", privacy),
+    re_path(r"^$", home),
+    re_path(r"^about$", about),
+    re_path(r"^docs$", docs),
+    re_path(r"^faq$", faq),
+    re_path(r"^privacy$", privacy),
 ]

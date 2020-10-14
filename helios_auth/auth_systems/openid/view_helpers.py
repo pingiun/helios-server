@@ -1,3 +1,6 @@
+from django import http
+from django.http import HttpResponseRedirect
+
 from openid.consumer import consumer
 from openid.consumer.discover import DiscoveryFailure
 from openid.extensions import ax, pape, sreg

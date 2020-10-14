@@ -1,0 +1,444 @@
+{
+  "id": "0006b5e5-a810-42c0-8b46-05811f753f29",
+  "version": "2.0",
+  "name": "Helios",
+  "url": "http://localhost:8000",
+  "tests": [{
+    "id": "7532a10e-7c1b-4570-ba60-235177fe329f",
+    "name": "create-election-and-vote",
+    "commands": [{
+      "id": "03fe86d0-6137-4331-a5a9-e8c291cede8c",
+      "comment": "",
+      "command": "open",
+      "target": "/helios/autologin",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "6be4e453-6a30-488d-8e1a-28d154153308",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "linkText=create election",
+      "targets": [
+        ["linkText=create election", "linkText"],
+        ["css=.small", "css:finder"],
+        ["xpath=//a[contains(text(),'create election')]", "xpath:link"],
+        ["xpath=//div[@id='mystuff']/div[2]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/helios/elections/new')]", "xpath:href"],
+        ["xpath=//div[2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'create election')]", "xpath:innerText"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "ba18db4c-2110-495b-9e8e-71592ab24e76",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=create election",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "f2e3e3b7-913a-4eb4-9b43-87b744bee192",
+      "comment": "",
+      "command": "type",
+      "target": "id=id_short_name",
+      "targets": [],
+      "value": "test1"
+    }, {
+      "id": "a1319558-b84b-4ba2-a091-775ebafc3d01",
+      "comment": "",
+      "command": "type",
+      "target": "id=id_name",
+      "targets": [],
+      "value": "test1"
+    }, {
+      "id": "40edf4d4-0330-4c35-8b25-40b70a42f873",
+      "comment": "",
+      "command": "type",
+      "target": "id=id_description",
+      "targets": [],
+      "value": "test1"
+    }, {
+      "id": "d1532bfb-795c-4a7c-9372-2b437d15dff0",
+      "comment": "",
+      "command": "click",
+      "target": "id=next_button",
+      "targets": [
+        ["id=next_button", "id"],
+        ["css=#next_button", "css:finder"],
+        ["xpath=//input[@id='next_button']", "xpath:attributes"],
+        ["xpath=//form[@id='create_election_form']/div/input", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1f430cb7-9bd3-4d80-82f5-64bb6bfa6be5",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=voters & ballots",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "e094b136-16d9-4044-8530-689f1a406d82",
+      "comment": "",
+      "command": "click",
+      "target": "name=eligibility",
+      "targets": [
+        ["name=eligibility", "name"],
+        ["css=input:nth-child(2)", "css:finder"],
+        ["xpath=//input[@name='eligibility']", "xpath:attributes"],
+        ["xpath=//div[@id='contentbody']/form/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ada08c70-6ae0-4926-9786-fe2d675fa7d2",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//input[@value='update']",
+      "targets": [
+        ["css=input:nth-child(6)", "css:finder"],
+        ["xpath=//input[@value='update']", "xpath:attributes"],
+        ["xpath=//div[@id='contentbody']/form/input[4]", "xpath:idRelative"],
+        ["xpath=//input[4]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1f4b242e-fddf-4034-af31-801ca2ba6f5c",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=back to election",
+      "targets": [
+        ["linkText=back to election", "linkText"],
+        ["css=span > a", "css:finder"],
+        ["xpath=//a[contains(text(),'back to election')]", "xpath:link"],
+        ["xpath=//div[@id='contentbody']/h3/span/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/helios/elections/0d7ba688-0e25-11eb-b6d0-784f43950f04/view')]", "xpath:href"],
+        ["xpath=//span/a", "xpath:position"],
+        ["xpath=//a[contains(.,'back to election')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "d242ef46-0663-4cbd-94cb-94e5d98ac789",
+      "comment": "",
+      "command": "click",
+      "target": "link=questions (0)",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "16b2a99d-c30b-4ec2-a045-44f463b0c813",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "id=answer_table",
+      "targets": [
+        ["id=answer_table", "id"],
+        ["css=#answer_table", "css:finder"],
+        ["xpath=//table[@id='answer_table']", "xpath:attributes"],
+        ["xpath=//form[@id='question_form']/table", "xpath:idRelative"],
+        ["xpath=//table", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "21320273-7b04-4fb0-9d4e-ada1b0bb6c18",
+      "comment": "",
+      "command": "type",
+      "target": "name=question",
+      "targets": [
+        ["name=question", "name"],
+        ["css=td:nth-child(2) > input", "css:finder"],
+        ["xpath=//input[@name='question']", "xpath:attributes"],
+        ["xpath=//table[@id='answer_table']/tbody/tr/td/input", "xpath:idRelative"],
+        ["xpath=//td/input", "xpath:position"]
+      ],
+      "value": "w?"
+    }, {
+      "id": "2ee5efa4-9748-4c2a-963d-9a384dfebc3a",
+      "comment": "",
+      "command": "type",
+      "target": "name=answer_1",
+      "targets": [],
+      "value": "a"
+    }, {
+      "id": "3a7fe333-0268-4b3f-afd0-ac37df55b3b9",
+      "comment": "",
+      "command": "type",
+      "target": "name=answer_2",
+      "targets": [],
+      "value": "b"
+    }, {
+      "id": "68376e8f-1e80-4e6d-b700-61a86db503d4",
+      "comment": "",
+      "command": "type",
+      "target": "name=answer_3",
+      "targets": [],
+      "value": "c"
+    }, {
+      "id": "1ce2ce8d-b836-4127-be57-39061b92bfdc",
+      "comment": "",
+      "command": "click",
+      "target": "//input[@value='add question']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "73ebd1b9-1707-4c38-b1ac-1797d29385e4",
+      "comment": "",
+      "command": "click",
+      "target": "link=back to election",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "7d8c6175-733e-4272-bdc5-8d90ce61022c",
+      "comment": "",
+      "command": "click",
+      "target": "link=freeze ballot and open election.",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a4e78a73-44c2-49ef-8722-95da1ae5f348",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "xpath=//input[@value='Freeze the ballot']",
+      "targets": [
+        ["css=form > .button", "css:finder"],
+        ["xpath=//input[@value='Freeze the ballot']", "xpath:attributes"],
+        ["xpath=//div[@id='contentbody']/form/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "36ae4d95-7be8-49e9-b710-af9a2e33fae6",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//input[@value='Freeze the ballot']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "15f4fb39-b444-4f74-bcd5-a5c16c2ba78d",
+      "comment": "",
+      "command": "click",
+      "target": "link=Vote in this election",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "b383a6d8-3df6-40fe-bd8b-97711929593a",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "xpath=//button[@onclick='BOOTH.show_question(0);']",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "82ce48a9-abd0-456a-8ce9-34a70de787e3",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//button[@onclick='BOOTH.show_question(0);']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "42528d81-08af-41a1-a734-550d647b1fb9",
+      "comment": "",
+      "command": "click",
+      "target": "id=answer_0_0",
+      "targets": [
+        ["id=answer_0_0", "id"],
+        ["name=answer_0_0", "name"],
+        ["css=#answer_0_0", "css:finder"],
+        ["xpath=//input[@id='answer_0_0']", "xpath:attributes"],
+        ["xpath=//div[@id='answer_label_0_0']/input", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "88509b53-edd0-426b-889e-545a11a1239b",
+      "comment": "",
+      "command": "click",
+      "target": "//input[@value='Proceed']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "b3dc9989-6f21-4b69-a78d-62c53f5cc789",
+      "comment": "",
+      "command": "click",
+      "target": "id=proceed_button",
+      "targets": [
+        ["id=proceed_button", "id"],
+        ["css=#proceed_button", "css:finder"],
+        ["xpath=//button[@id='proceed_button']", "xpath:attributes"],
+        ["xpath=//div[@id='seal_div']/button", "xpath:idRelative"],
+        ["xpath=//div[7]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit this Vote!')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "cca33f81-7e7c-4f2d-8f2b-3f3192fc1cf6",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "//button[@type='submit']",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "691651f6-10fd-4636-af06-a8a0f5c2e685",
+      "comment": "",
+      "command": "click",
+      "target": "//button[@type='submit']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "2c3348a6-2ac8-4cfd-91d8-e132021d3432",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "linkText=return to election info",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "a215ec1d-f0a5-452a-9b99-ce3311b349d5",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=return to election info",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "cea847a3-c4d4-4fd8-8137-0cbfea296f32",
+      "comment": "",
+      "command": "open",
+      "target": "/helios/autologin",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "04fffec3-10d3-44a4-95ff-83fa4c2f4939",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "linkText=create election",
+      "targets": [
+        ["linkText=create election", "linkText"],
+        ["css=.small", "css:finder"],
+        ["xpath=//a[contains(text(),'create election')]", "xpath:link"],
+        ["xpath=//div[@id='mystuff']/div[2]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/helios/elections/new')]", "xpath:href"],
+        ["xpath=//div[2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'create election')]", "xpath:innerText"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "86263240-b075-49fd-b20d-6e3318797c69",
+      "comment": "",
+      "command": "open",
+      "target": "/helios/e/test1",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c7c70d94-32aa-430e-ab85-70d1bfcb34da",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=compute encrypted tally",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "e2693971-0e8c-4a48-a1a7-444343f1a728",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "xpath=//input[@value='compute encrypted tally!']",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "3378c089-0ef6-44b9-a33d-5a4bd779a0af",
+      "comment": "",
+      "command": "click",
+      "target": "//input[@value='compute encrypted tally!']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "4867a4c1-0c2d-441c-8fac-915feb411831",
+      "comment": "",
+      "command": "assertAlert",
+      "target": "ok, tally has begun",
+      "targets": [],
+      "value": "ok, tally has begun"
+    }, {
+      "id": "e989d94c-0d3a-45ae-a692-9678072129ed",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "linkText=compute results",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "5d9227ae-08fa-4710-9490-f1f9dd1a9801",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=compute results",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "fcef16a3-9da6-4ad7-9853-608be998ddf1",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//input[@value='compute the tally!']",
+      "targets": [
+        ["css=form > .button", "css:finder"],
+        ["xpath=//input[@value='compute the tally!']", "xpath:attributes"],
+        ["xpath=//div[@id='contentbody']/form/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "105be563-693b-4dde-a2ef-5152ec52ffcf",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=release result",
+      "targets": [
+        ["linkText=release result", "linkText"],
+        ["css=span > a", "css:finder"],
+        ["xpath=//a[contains(text(),'release result')]", "xpath:link"],
+        ["xpath=//div[@id='contentbody']/p[2]/span/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/helios/elections/6768cf76-0e26-11eb-ac45-784f43950f04/release_result')]", "xpath:href"],
+        ["xpath=//span/a", "xpath:position"],
+        ["xpath=//a[contains(.,'release result')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "9e5e2a88-1bca-43d3-b999-f123b2d00048",
+      "comment": "",
+      "command": "click",
+      "target": "name=send_email",
+      "targets": [
+        ["name=send_email", "name"],
+        ["css=p > input", "css:finder"],
+        ["xpath=//input[@name='send_email']", "xpath:attributes"],
+        ["xpath=//div[@id='contentbody']/form/p/input", "xpath:idRelative"],
+        ["xpath=//p/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "4f1c21f5-de25-4fa0-951e-3670643875d3",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//input[@value='release result!']",
+      "targets": [
+        ["css=.button:nth-child(3)", "css:finder"],
+        ["xpath=//input[@value='release result!']", "xpath:attributes"],
+        ["xpath=//div[@id='contentbody']/form/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b599eeb9-9284-49be-a46e-65110d6428b8",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.highlight-box",
+      "targets": [
+        ["css=.highlight-box:nth-child(8)", "css:finder"],
+        ["xpath=//div[@id='contentbody']/span", "xpath:idRelative"],
+        ["xpath=//div[3]/div/span", "xpath:position"],
+        ["xpath=//span[contains(.,'This election is complete.')]", "xpath:innerText"]
+      ],
+      "value": "This election is complete."
+    }]
+  }],
+  "suites": [{
+    "id": "35989ba9-6662-4274-bae9-cd8317b09933",
+    "name": "helios",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["7532a10e-7c1b-4570-ba60-235177fe329f"]
+  }],
+  "urls": ["http://localhost:8000/"],
+  "plugins": []
+}

@@ -46,15 +46,19 @@ DATABASES = {
 if get_from_env("DATABASE_URL", None):
     import dj_database_url
 
-    DATABASES["default"] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-    DATABASES["default"]["ENGINE"] = "django.db.backends.postgresql_psycopg2"
+    DATABASES["default"] = dj_database_url.config()
+    # DATABASES["default"]["ENGINE"] = "django.db.backends.postgresql_psycopg2"
+    # DATABASES["default"]["CONN_MAX_AGE"] = 600
+    #
+    # # require SSL
+    # DATABASES["default"]["OPTIONS"] = {"sslmode": "require"}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = "America/Los_Angeles"
+TIME_ZONE = "Etc/UTC"
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -64,7 +68,7 @@ SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
-USE_I18N = True
+USE_I18N = False
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
@@ -135,9 +139,6 @@ TEMPLATES = [
         "DIRS": [
             ROOT_PATH,
             os.path.join(ROOT_PATH, "templates"),
-            # os.path.join(ROOT_PATH, 'helios/templates'),  # covered by APP_DIRS:True
-            # os.path.join(ROOT_PATH, 'helios_auth/templates'),  # covered by APP_DIRS:True
-            # os.path.join(ROOT_PATH, 'server_ui/templates'),  # covered by APP_DIRS:True
         ],
         "OPTIONS": {"debug": DEBUG},
     },
@@ -253,7 +254,7 @@ CLEVER_CLIENT_SECRET = get_from_env("CLEVER_CLIENT_SECRET", "")
 
 # email server
 EMAIL_HOST = get_from_env("EMAIL_HOST", "localhost")
-EMAIL_PORT = int(get_from_env("EMAIL_PORT", "2525"))
+EMAIL_PORT = int(get_from_env("EMAIL_PORT", "1025"))
 EMAIL_HOST_USER = get_from_env("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = get_from_env("EMAIL_HOST_PASSWORD", "")
 EMAIL_USE_TLS = get_from_env("EMAIL_USE_TLS", "0") == "1"
@@ -275,7 +276,8 @@ logging.basicConfig(
 # set up celery
 CELERY_BROKER_URL = get_from_env("CELERY_BROKER_URL", "amqp://localhost")
 if TESTING:
-    CELERY_TASK_ALWAYS_EAGER = True
+    pass
+CELERY_TASK_ALWAYS_EAGER = True
 # database_url = DATABASES['default']
 
 # Rollbar Error Logging

@@ -22,7 +22,6 @@ from django.http import (
     HttpResponseForbidden,
 )
 from django.urls import reverse
-from validate_email import validate_email
 
 import helios_auth.url_names as helios_auth_urls
 from helios import utils, VOTERS_EMAIL, VOTERS_UPLOAD, url_names
@@ -1721,6 +1720,10 @@ def voters_eligibility(request, election):
     return HttpResponseRedirect(
         settings.SECURE_URL_HOST + reverse(voters_list_pretty, args=[election.uuid])
     )
+
+
+def validate_email(inp):
+    return "@" in inp
 
 
 @election_admin()

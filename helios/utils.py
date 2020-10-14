@@ -10,12 +10,15 @@ import re
 import string
 import urllib.parse
 
-from django.conf import settings
 
 from helios.crypto.utils import random
 
 # utils from helios_auth, too
 from helios_auth.utils import *
+
+from django.conf import settings
+
+import random, logging
 
 
 def split_by_length(str, length, rejoin_with=None):
@@ -51,7 +54,7 @@ def urlencodeall(str):
     if not str:
         return ""
 
-    return string.join(["%" + s.encode("hex") for s in str], "")
+    return "".join(["%" + s.encode("hex") for s in str])
 
 
 def urldecode(str):
@@ -82,47 +85,10 @@ def xml_unescape(s):
     return new_s
 
 
-##
-## XSS attack prevention
-##
-
-
-def xss_strip_all_tags(s):
-    """
-    Strips out all HTML.
-    """
-    return s
-
-    def fixup(m):
-        text = m.group(0)
-        if text[:1] == "<":
-            return ""  # ignore tags
-        if text[:2] == "&#":
-            try:
-                if text[:3] == "&#x":
-                    return chr(int(text[3:-1], 16))
-                else:
-                    return chr(int(text[2:-1]))
-            except ValueError:
-                pass
-        elif text[:1] == "&":
-            import html.entities
-
-            entity = html.entities.entitydefs.get(text[1:-1])
-            if entity:
-                if entity[:2] == "&#":
-                    try:
-                        return chr(int(entity[2:-1]))
-                    except ValueError:
-                        pass
-                else:
-                    return str(entity, "iso-8859-1")
-        return text  # leave as is
-
-    return re.sub("(?s)<[^>]*>|&#?\w+;", fixup, s)
 
 
 def random_string(length=20, alphabet=None):
+    random.seed()
     ALPHABET = (
         alphabet or "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
     )

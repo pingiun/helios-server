@@ -2,12 +2,11 @@
 Username/Password Authentication
 """
 
-from django.urls import reverse
+from django.urls import reverse, re_path
 from django import forms
 from django.core.mail import send_mail
 from django.conf import settings
 from django.http import HttpResponseRedirect
-from django.conf.urls import url
 
 from helios_auth import url_names
 
@@ -22,9 +21,12 @@ PASSWORD_FORGOTTEN_URL_NAME = "auth@password@forgotten"
 def create_user(username, password, name=None):
     from helios_auth.models import User
 
-    user = User.get_by_type_and_id("password", username)
-    if user:
-        raise Exception("user exists")
+    try:
+        user = User.get_by_type_and_id("password", username)
+        if user:
+            raise Exception("user exists")
+    except User.DoesNotExist:
+        pass
 
     info = {"password": password, "name": name}
     user = User.update_or_create(user_type="password", user_id=username, info=info)
@@ -176,6 +178,8 @@ def can_create_election(user_id, user_info):
 
 
 urlpatterns = [
-    url(r"^password/login", password_login_view, name=PASSWORD_LOGIN_URL_NAME),
-    url(r"^password/forgot", password_forgotten_view, name=PASSWORD_FORGOTTEN_URL_NAME),
+    re_path(r"^password/login", password_login_view, name=PASSWORD_LOGIN_URL_NAME),
+    re_path(
+        r"^password/forgot", password_forgotten_view, name=PASSWORD_FORGOTTEN_URL_NAME
+    ),
 ]

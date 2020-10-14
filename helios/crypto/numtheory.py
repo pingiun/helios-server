@@ -106,7 +106,11 @@ def trial_division(n, bound=None):
     for p in [2, 3, 5]:
         if n % p == 0:
             return p
+<<<<<<< HEAD
     if bound is None:
+=======
+    if bound == None:
+>>>>>>> adf4978... Update for python 3.9
         bound = n
     dif = [6, 4, 2, 4, 2, 4, 6, 2]
     m = 7
@@ -228,7 +232,11 @@ def inversemod(a, n):
     """
     g, x, y = xgcd(a, n)
     if g != 1:
+<<<<<<< HEAD
         raise ZeroDivisionError(a, n)
+=======
+        raise ZeroDivisionError((a, n))
+>>>>>>> adf4978... Update for python 3.9
     assert g == 1, "a must be coprime to n."
     return x % n
 
@@ -1151,7 +1159,7 @@ def elgamal_encrypt(plain_text, public_key):
     Examples:
     >>> public, private = elgamal_init(random_prime(20))
     >>> elgamal_encrypt("RUN", public)
-    [((6004308617723068486L, 15578511190582849677L), \ #rand
+    [((6004308617723068486L, 15578511190582849677L),   #rand
      (7064405129585539806L, 8318592816457841619L))]    #rand
     """
     E, B, nB = public_key
@@ -1258,7 +1266,11 @@ class Poly:  # (1)
         del self.v[tuple(m)]
 
     def monomials(self):  # (7)
+<<<<<<< HEAD
         return list(self.v.keys())
+=======
+        return self.v.keys()
+>>>>>>> adf4978... Update for python 3.9
 
     def normalize(self):  # (8)
         while True:

@@ -5,7 +5,6 @@ Ben Adida
 2009-07-05
 """
 
-from urllib.parse import urlencode
 
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse

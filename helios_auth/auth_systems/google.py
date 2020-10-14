@@ -4,11 +4,10 @@ Google Authentication
 """
 
 import httplib2
+import json
 from django.conf import settings
 from django.core.mail import send_mail
 from oauth2client.client import OAuth2WebServerFlow
-
-from helios_auth import utils
 
 # some parameters to indicate that status updating is not possible
 STATUS_UPDATES = False
@@ -56,7 +55,7 @@ def get_user_info_after_auth(request):
         "https://people.googleapis.com/v1/people/me?personFields=names", "GET"
     )
 
-    response = utils.from_json(content)
+    response = json.loads(content)
 
     name = response["names"][0]["displayName"]
 

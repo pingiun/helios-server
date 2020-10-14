@@ -1,0 +1,41 @@
+---
+
+name: Test suite
+on: [push]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    name: Run Selenium tests
+    env:
+      DATABASE_URL: sqlite:///test.db
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: Install dependencies
+      run: |
+        python -m pip install -r requirements.txt
+        npm install -g selenium-side-runner
+    - name: Start selenoid
+      uses: Xotabu4/selenoid-github-action@v1
+    - name: Initialize database
+      run: |
+        python manage.py migrate
+        python manage.py createadmin
+    - name: Run Selenium tests
+      run: |
+        python manage.py runserver &
+        until $(curl --output /dev/null --silent --head --fail http://localhost:8000); do
+            printf '.'
+            sleep 1
+        done
+        selenium-side-runner --server http://localhost:4444/wd/hub selenium/Helios.side

@@ -12,6 +12,7 @@ from openid.store import sqlstore
 from openid.store.filestore import FileOpenIDStore
 
 
+
 def getOpenIDStore(filestore_path, table_prefix):
     """
     Returns an OpenID association store object based on the database

@@ -6,11 +6,11 @@
 var SECRET_KEY;
 
 function before_create() {
-{% ifequal election_type "one" %}
+{% if election_type == "one" %}
     return confirm('Have you made sure to copy the private key to a safe place?\n\nOnce you click OK, Helios will not be able to recover the secret key without your help!');
 {% else %}
     return true;
-{% endifequal %}
+{% endif %}
 }
 
 function generate_keypair() {
@@ -26,14 +26,14 @@ function generate_keypair() {
 
     $('#pk').val(jQuery.toJSON(SECRET_KEY.pk));
     
-{% ifequal election_type "one" %}
+{% if election_type == "one" %}
     $('#sk_textarea').val(jQuery.toJSON(SECRET_KEY));
     $('#sk_form').show();
 {% else %}
-{% ifequal election_type "helios" %}
+{% if election_type == "helios" %}
     $('#sk').val(jQuery.toJSON(SECRET_KEY));
-{% endifequal %}
-{% endifequal %}
+{% endif %}
+{% endif %}
 
     $('#submit').show();
 }
@@ -47,15 +47,15 @@ $(document).ready(function() {
 </script>
 
   <h2 class="title">Create a New Election: {{name}}</h2>
-{% ifequal election_type "helios" %}
+{% if election_type == "helios" %}
   <b>An election managed by Helios</b>.
 {% else %}
-{% ifequal election_type "one" %}
+{% if election_type == "one" %}
   <b>An election managed by you, the single administrator</b>.
 {% else %}
 <b>An election managed by multiple trustees</b>.
-{% endifequal %}
-{% endifequal %}
+{% endif %}
+{% endif %}
   <form class="prettyform" action="{% url "helios.views.election_new_3" %}" method="POST" id="create_election_form" onsubmit="return before_create();">
       <input type="hidden" name="csrf_token" value="{{csrf_token}}" />
       <input type="hidden" name="name" value="{{name}}" />
@@ -78,7 +78,7 @@ $(document).ready(function() {
 <label for="">&nbsp;</label>  <input type="submit" value="create" id="submit" />
   </form>
   <br /><br />
-{% ifequal election_type "one" %}
+{% if election_type == "one" %}
   <form style="padding-left: 200px;" id="sk_form" onsubmit="return false;">
       <input type="hidden" name="csrf_token" value="{{csrf_token}}" />
       Your Election's Secret Key:<br />
@@ -88,5 +88,5 @@ $(document).ready(function() {
       (You need to copy and paste this key and keep it safe,<br />
       otherwise you won't be able to tally your election.)
   </form>
-{% endifequal %}
+{% endif %}
 {% endblock %}
