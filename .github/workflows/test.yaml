@@ -9,6 +9,7 @@ jobs:
     name: Run Selenium tests
     env:
       DATABASE_URL: sqlite:///test.db
+    if: false # Skip for now
 
     steps:
     - name: Checkout repository
