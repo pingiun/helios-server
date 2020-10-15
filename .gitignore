@@ -6,6 +6,14 @@ media/*
 venv*
 celerybeat-*
 env.sh
+.env
+helios_servermedia/
 .cache
 .idea/
 side-suite-Helios.test.js
+
+# nix
+
+result
+result-*
+.pre-commit-config.yaml

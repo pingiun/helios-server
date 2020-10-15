@@ -4,7 +4,7 @@ name: Test suite
 on: [push]
 
 jobs:
-  tests:
+  selenium-tests:
     runs-on: ubuntu-latest
     name: Run Selenium tests
     env:
@@ -40,3 +40,15 @@ jobs:
             sleep 1
         done
         selenium-side-runner --server http://localhost:4444/wd/hub selenium/Helios.side
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.3
+      - uses: cachix/install-nix-action@v11
+      - uses: cachix/cachix-action@v6
+        with:
+          name: pingiun
+          signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+      - run: nix-build
+      - run: nix-shell --run "echo OK"

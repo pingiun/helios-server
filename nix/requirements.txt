@@ -1,0 +1,10 @@
+Django
+celery
+dj_database_url
+django_webtest
+webtest
+bleach
+httplib2
+oauth2client
+Authlib
+rollbar

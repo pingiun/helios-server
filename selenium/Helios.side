@@ -36,19 +36,26 @@
       "targets": [],
       "value": ""
     }, {
+      "id": "ed84f74a-3fcb-4832-8e1b-c32fffbd78bb",
+      "comment": "",
+      "command": "executeScript",
+      "target": "return \"test\" + Math.floor(Math.random()*11111);",
+      "targets": [],
+      "value": "name"
+    }, {
       "id": "f2e3e3b7-913a-4eb4-9b43-87b744bee192",
       "comment": "",
       "command": "type",
       "target": "id=id_short_name",
       "targets": [],
-      "value": "test1"
+      "value": "${name}"
     }, {
       "id": "a1319558-b84b-4ba2-a091-775ebafc3d01",
       "comment": "",
       "command": "type",
       "target": "id=id_name",
       "targets": [],
-      "value": "test1"
+      "value": "${name}"
     }, {
       "id": "40edf4d4-0330-4c35-8b25-40b70a42f873",
       "comment": "",
@@ -320,7 +327,7 @@
       "id": "86263240-b075-49fd-b20d-6e3318797c69",
       "comment": "",
       "command": "open",
-      "target": "/helios/e/test1",
+      "target": "/helios/e/${name}",
       "targets": [],
       "value": ""
     }, {
