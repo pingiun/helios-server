@@ -9,7 +9,7 @@ let
 
   pre-commit-hooks = (import sources."pre-commit-hooks.nix");
 
-  pypi2nix = (import sources."pypi2nix" {});
+  pypi2nix = (import sources."pypi2nix" { inherit pkgs; });
 
   src = gitignoreSource ./..;
 
