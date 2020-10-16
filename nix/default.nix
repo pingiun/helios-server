@@ -9,15 +9,22 @@ let
 
   pre-commit-hooks = (import sources."pre-commit-hooks.nix");
 
-  pypi2nix = (import sources."pypi2nix" { inherit pkgs; });
-
   src = gitignoreSource ./..;
 
-  requirements = (import ./requirements.nix { python = my-python; lib = pkgs.lib; inherit pkgs; });
+  requirements = (import ./requirements.nix { python = pkgs.python39; lib = pkgs.lib; inherit pkgs; });
 
-  my-python = pkgs.python39;
+  python = pkgs.python39.withPackages (ps: with ps; [
+    django
+    requirements.authlib
+    psycopg2
+    pycryptodome
+    gunicorn
+    requirements.celery
+    requirements.bleach
+    requirements.django-webtest
+  ]);
 
-  helios-server = pkgs.python39.pkgs.buildPythonPackage {
+  helios-server = pkgs.python39.pkgs.buildPythonApplication {
     pname = "helios-server";
     version = "4.0.0";
 
@@ -40,6 +47,19 @@ let
     inherit src;
   };
 
+  manage-py = "${src}/manage.py";
+  wsgi = "helios_server.wsgi:application";
+
+  helios-manage = pkgs.writeScriptBin "helios-manage" ''
+    ${python}/bin/python ${manage-py} $@
+  '';
+
+  helios-gunicorn = pkgs.writeScriptBin "helios-gunicorn" ''
+    ${python}/bin/python ${manage-py} migrate
+    ${python}/bin/gunicorn ${wsgi} \
+            --pythonpath ${src} $@
+  '';
+
 in
 {
   inherit pkgs src;
@@ -48,8 +68,8 @@ in
   devTools = {
     inherit (pkgs) niv;
     inherit (pre-commit-hooks) pre-commit;
-    inherit pypi2nix;
-    inherit my-python;
+    inherit helios-manage;
+    inherit helios-gunicorn;
   };
 
   # to be built by github actions
@@ -65,5 +85,6 @@ in
       excludes = [ "^nix/sources\.nix$" ];
     };
     inherit helios-server;
+    inherit helios-gunicorn;
   };
 }

@@ -85,13 +85,6 @@ in
         hash = "sha256:0g5c0lg2abva1d8nrc824jk5fcvf8kbbbvhb8xyx86271ax5z5pl";
       };
 
-      postPatch = ''
-        substituteInPlace requirements/test.txt \
-          --replace "pytest-sugar" ""
-        substituteInPlace requirements/default.txt \
-          --replace "amqp==2.5.1" "amqp~=2.5"
-      '';
-
       propagatedBuildInputs = [ amqp ];
 
       checkInputs = [ botocore pytest case pytz Pyro4 sqlalchemy ];

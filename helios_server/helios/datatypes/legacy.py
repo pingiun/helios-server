@@ -90,7 +90,7 @@ class EncryptedVoteWithRandomness(LegacyObject):
 class Voter(LegacyObject):
     FIELDS = ["election_uuid", "uuid", "voter_type", "voter_id_hash", "name"]
 
-    ALIASED_VOTER_FIELDS = ["election_uuid", "uuid", "alias"]
+    ALIASED_VOTER_FIELDS = ["election_uuid", "uuid", "alias_num"]
 
     def toDict(self, complete=False):
         """
