@@ -341,7 +341,7 @@ class DatatypeTests(TestCase):
 ##
 
 
-class DataFormatBlackboxTests(object):
+class DataFormatBlackboxTests:
     def setUp(self):
         self.election = models.Election.objects.all()[0]
 

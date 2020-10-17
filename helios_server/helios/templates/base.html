@@ -11,7 +11,12 @@
       <link type="text/css" href="{{HELIOS_STATIC}}/css/ui-lightness/jquery-ui-1.8.1.custom.css" />
     {% endblock %}
 
-      <script language="javascript" src="{{ HELIOS_STATIC }}/js/jquery-1.4.2.min.js"></script>
+{#      <script language="javascript" src="{{ HELIOS_STATIC }}/js/jquery-1.4.2.min.js"></script>#}
+      <script
+            src="https://code.jquery.com/jquery-1.12.4.js"
+            integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU="
+            crossorigin="anonymous"></script>
+      <script language="javascript" src="{{ HELIOS_STATIC }}/js/jquery-migrate-1.4.1.js"></script>
       <script language="javascript" src="{{ HELIOS_STATIC }}/js/jquery-ui-1.8.1.custom.min.js"></script>
     
     {% block js %}

@@ -2,6 +2,7 @@
 Thalia Authentication
 
 """
+import datetime
 import json
 
 from authlib.integrations.django_client import OAuth
@@ -15,13 +16,23 @@ STATUS_UPDATES = False
 LOGIN_MESSAGE = "Log in with my Thalia Account"
 
 oauth = OAuth()
+# oauth.register(
+#     name="thalia",
+#     client_id="cRJt1rw0hIoVbRLzpWI12wZKJWsyM1FeU5vk7XMS",
+#     client_secret="hdkuWIGXAOwRcK78yIf9DtcA6FpFeXxMDsxRfAmoubJrTHWB7aGUeehk1MqMGGI2CyrLBhWabFhUatBOFtA7bGB8deqGTWcg7Ulrv2hqGBQ9GofxnN6MRTtJXUh4is1G",
+#     authorize_url="https://staging.thalia.nu/user/oauth/authorize/",
+#     access_token_url="https://staging.thalia.nu/user/oauth/token/",
+#     api_base_url="https://staging.thalia.nu/api/v1/",
+#     scope="members:read",
+# )
+
 oauth.register(
     name="thalia",
-    client_id="cRJt1rw0hIoVbRLzpWI12wZKJWsyM1FeU5vk7XMS",
-    client_secret="hdkuWIGXAOwRcK78yIf9DtcA6FpFeXxMDsxRfAmoubJrTHWB7aGUeehk1MqMGGI2CyrLBhWabFhUatBOFtA7bGB8deqGTWcg7Ulrv2hqGBQ9GofxnN6MRTtJXUh4is1G",
-    authorize_url="https://staging.thalia.nu/user/oauth/authorize/",
-    access_token_url="https://staging.thalia.nu/user/oauth/token/",
-    api_base_url="https://staging.thalia.nu/api/v1/",
+    client_id="rLIrRdepTqJrHdul1YwbT2klK1ePBwlUaUORVf3V",
+    client_secret="vFaiWcHkmSG5hkqZkB3v3KtrVCx7xhVa8a9CvfihI2GT7phZefzLvmFzA5WAlSjDGejwJhVcMipAp9ctRGnq3GQSulBsYhkaBTrUHPWWmX7zsIykrMpklqq7ECpSPVcQ",
+    authorize_url="http://127.0.0.1:8001/user/oauth/authorize/",
+    access_token_url="http://127.0.0.1:8001/user/oauth/token/",
+    api_base_url="http://127.0.0.1:8001/api/v1/",
     scope="members:read",
 )
 
@@ -50,15 +61,12 @@ def get_user_info_after_auth(request):
 
     name = user["display_name"]
 
-    # watch out, response also contains email addresses, but not sure whether thsoe are verified or not
-    # so for email address we will only look at the id_token
-
     return {
         "type": "thalia",
         "user_id": email,
         "name": name,
         "info": {"email": email},
-        "token": {},
+        "token": token,
     }
 
 
@@ -89,11 +97,34 @@ def send_message(user_id, name, user_info, subject, body):
     )
 
 
-def check_constraint(constraint, user_info):
+def generate_constraint(category_id, user):
+    return {"event": category_id}
+
+
+def pretty_eligibility(constraint):
+    return f'Users present for event with id {constraint["event"]}'
+
+
+def eligibility_category_id(constraint):
+    return constraint["event"]
+
+
+def list_categories(user):
+    resp = oauth.thalia.get("events/", token=user.token)
+    events = [event for event in json.loads(resp.text) if event["registration_allowed"]]
+    return [
+        {"id": str(event["pk"]), "name": f'Present at "{event["title"]}"'}
+        for event in events
+    ]
+
+def check_constraint(constraint, user):
     """
     for eligibility
     """
-    pass
+    events_resp = oauth.thalia.get("events/", token=user.token)
+    events = json.loads(events_resp.text)
+    present = [str(event["pk"]) for event in events if event["present"] == True]
+    return constraint["event"] in present
 
 
 #

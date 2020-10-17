@@ -290,7 +290,7 @@ class EncryptedVote(WorkflowObject):
         return return_val
 
 
-class DLogTable(object):
+class DLogTable:
     """
     Keeping track of discrete logs
     """

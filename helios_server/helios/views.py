@@ -39,7 +39,15 @@ from . import forms
 from . import tasks
 from .crypto import algs, electionalgs, elgamal
 from .crypto import utils as cryptoutils
-from helios_server.helios.models import User, Election, CastVote, Voter, VoterFile, Trustee, AuditedBallot
+from helios_server.helios.models import (
+    User,
+    Election,
+    CastVote,
+    Voter,
+    VoterFile,
+    Trustee,
+    AuditedBallot,
+)
 from .security import (
     election_view,
     election_admin,
@@ -1671,6 +1679,7 @@ def voters_list_pretty(request, election):
             "limit": limit,
             "total_voters": total_voters,
             "upload_p": VOTERS_UPLOAD,
+            "allow_password": election.eligibility and {"auth_system": "password"} in election.eligibility,
             "q": q,
             "voter_files": voter_files,
             "categories": categories,
@@ -1713,6 +1722,10 @@ def voters_eligibility(request, election):
         election.eligibility = [
             {"auth_system": user.user_type, "constraint": [constraint]}
         ]
+        if "allow_password" in request.POST:
+            election.eligibility += [
+                {"auth_system": "password"}
+            ]
     else:
         election.eligibility = None
 

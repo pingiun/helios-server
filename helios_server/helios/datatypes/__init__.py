@@ -6,7 +6,7 @@ to and from that object. For example, a Helios election is treated as follows:
 
   helios_election = get_current_election() # returns a helios.models.Election object
   
-  # dispatch to the right contructor via factory pattern
+  # dispatch to the right constructor via factory pattern
   # LDObject knows about base classes like Election, Voter, CastVote, Trustee
   # and it looks for the datatype field within the wrapped object to determine
   # which LDObject subclass to dispatch to.
@@ -26,6 +26,7 @@ And when data comes in:
   LDObject.deserialize(json_string, type=...)
 """
 import importlib
+import warnings
 
 from helios_server.helios import utils
 from helios_server.helios.crypto import utils as cryptoutils
@@ -73,7 +74,7 @@ def get_class(datatype):
     return dynamic_cls
 
 
-class LDObjectContainer(object):
+class LDObjectContainer:
     """
     a simple container for an LD Object.
     """
@@ -96,7 +97,7 @@ class LDObjectContainer(object):
         return self.ld_object.hash
 
 
-class LDObject(object):
+class LDObject:
     """
     A linked-data object wraps another object and serializes it according to a particular
     data format. For example, a legacy election LDObject instance will wrap an Election object
@@ -148,7 +149,11 @@ class LDObject(object):
         return return_obj
 
     def _getattr_wrapped(self, attr):
-        return getattr(self.wrapped_obj, attr)
+        try:
+            return getattr(self.wrapped_obj, attr)
+        # Allow for dicts to be upgraded to LDObjects
+        except AttributeError:
+            return self.wrapped_obj[attr]
 
     def _setattr_wrapped(self, attr, val):
         setattr(self.wrapped_obj, attr, val)
@@ -198,7 +203,7 @@ class LDObject(object):
 
         fields = self.FIELDS
 
-        if not self.structured_fields:
+        if hasattr(self.wrapped_obj, "alias_num"):
             if self.wrapped_obj.alias_num is not None:
                 fields = self.ALIASED_VOTER_FIELDS
 
@@ -211,10 +216,10 @@ class LDObject(object):
 
         if self.USE_JSON_LD:
             if complete:
-                val["#"] = {"#vocab": "http://heliosvoting.org/ns#"}
+                val["@context"] = {"@vocab": "http://heliosvoting.org/ns#"}
 
             if hasattr(self, "datatype"):
-                val["a"] = self.datatype
+                val["@type"] = self.datatype
 
         return val
 
@@ -229,6 +234,10 @@ class LDObject(object):
         # the LD type is either in d or in type_hint
         # FIXME: get this from the dictionary itself
         ld_type = type_hint
+        if "@type" in d:
+            if ld_type is not None and ld_type != d["@type"]:
+                warnings.warn(f"Expected type from `type_hint` isn't the same as @type in object: {type_hint} !+ {d['type']}")
+            ld_type = d["@type"]
 
         # get the LD class so we know what wrapped object to instantiate
         ld_cls = get_class(ld_type)
@@ -336,7 +345,7 @@ def arrayOf(element_type):
     return ArrayOfTypedObjects
 
 
-class DictObject(object):
+class DictObject:
     "when the wrapped object is actually dictionary"
 
     def _getattr_wrapped(self, attr):
@@ -346,7 +355,7 @@ class DictObject(object):
         self.wrapped_obj[attr] = val
 
 
-class ListObject(object):
+class ListObject:
     def loadDataFromDict(self, d):
         self.wrapped_obj = d
 

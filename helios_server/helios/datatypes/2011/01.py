@@ -57,6 +57,8 @@ class Election(LDObject):
 class Voter(LDObject):
     FIELDS = ["election_uuid", "uuid", "voter_type", "voter_id_hash", "name"]
 
+    ALIASED_VOTER_FIELDS = ["election_uuid", "uuid", "alias_num"]
+
 
 class EncryptedAnswer(LDObject):
     FIELDS = ["choices", "individual_proofs", "overall_proof", "randomness", "answer"]
@@ -68,6 +70,17 @@ class EncryptedAnswer(LDObject):
         # answer is not a structured field, it's an as-is integer
     }
 
+Questions = arrayOf("2011/01/Question")
 
-class Questions(ListObject, LDObject):
-    WRAPPED_OBJ = list
+class Question(LDObject):
+    FIELDS = [
+        "answer_urls",
+        "answers",
+        "choice_type",
+        "max",
+        "min",
+        "question",
+        "result_type",
+        "short_name",
+        "tally_type"
+    ]

@@ -51,5 +51,8 @@ urlpatterns = [
         name=names.ELECTIONS_ADMINISTERED,
     ),
     re_path(r"^elections/voted$", views.elections_voted, name=names.ELECTIONS_VOTED),
-    re_path(r"^elections/(?P<election_uuid>[^/]+)", include("helios_server.helios.election_urls")),
+    re_path(
+        r"^elections/(?P<election_uuid>[^/]+)",
+        include("helios_server.helios.election_urls"),
+    ),
 ]

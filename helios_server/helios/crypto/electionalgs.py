@@ -13,7 +13,7 @@ from . import algs
 from . import utils
 
 
-class HeliosObject(object):
+class HeliosObject:
     """
     A base class to ease serialization and de-serialization
     crypto objects are kept as full-blown crypto objects, serialized to jsonobjects on the way out
@@ -707,7 +707,7 @@ class CastVote(HeliosObject):
         return issues
 
 
-class DLogTable(object):
+class DLogTable:
     """
     Keeping track of discrete logs
     """

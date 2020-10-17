@@ -4,8 +4,7 @@ Views for authentication
 Ben Adida
 2009-07-05
 """
-
-
+from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 
@@ -224,7 +223,7 @@ def after(request):
     user = system.get_user_info_after_auth(request)
 
     if user:
-        # get the user and store any new data about him
+        # get the user and store any new data about them
         user_obj = User.update_or_create(
             user["type"], user["user_id"], user["name"], user["info"], user["token"]
         )

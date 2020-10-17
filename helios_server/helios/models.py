@@ -43,7 +43,7 @@ class Election(HeliosModel):
     # v3 and prior have a datatype of "legacy/Election"
     # v3.1 will still use legacy/Election
     # later versions, at some point will upgrade to "2011/01/Election"
-    datatype = models.CharField(max_length=250, null=False, default="legacy/Election")
+    datatype = models.CharField(max_length=250, null=False, default="2011/01/Election")
 
     short_name = models.CharField(max_length=100, unique=True)
     name = models.CharField(max_length=250)
@@ -190,7 +190,12 @@ class Election(HeliosModel):
         if not self.use_voter_aliases:
             return None
 
-        return self.voter_set.filter(alias_num__isnull=False).order_by("-alias_num").first() or 0
+        return (
+            self.voter_set.filter(alias_num__isnull=False)
+            .order_by("-alias_num")
+            .first()
+            or 0
+        )
 
     @property
     def encrypted_tally_hash(self):

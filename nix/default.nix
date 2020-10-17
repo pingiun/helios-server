@@ -13,7 +13,7 @@ let
 
   requirements = (import ./requirements.nix { python = pkgs.python39; lib = pkgs.lib; inherit pkgs; });
 
-  python = pkgs.python39.withPackages (ps: with ps; [
+  my-python = pkgs.python39.withPackages (ps: with ps; [
     django
     requirements.authlib
     psycopg2
@@ -51,12 +51,12 @@ let
   wsgi = "helios_server.wsgi:application";
 
   helios-manage = pkgs.writeScriptBin "helios-manage" ''
-    ${python}/bin/python ${manage-py} $@
+    ${my-python}/bin/python ${manage-py} $@
   '';
 
   helios-gunicorn = pkgs.writeScriptBin "helios-gunicorn" ''
-    ${python}/bin/python ${manage-py} migrate
-    ${python}/bin/gunicorn ${wsgi} \
+    ${my-python}/bin/python ${manage-py} migrate
+    ${my-python}/bin/gunicorn ${wsgi} \
             --pythonpath ${src} $@
   '';
 
@@ -70,6 +70,7 @@ in
     inherit (pre-commit-hooks) pre-commit;
     inherit helios-manage;
     inherit helios-gunicorn;
+    inherit my-python;
   };
 
   # to be built by github actions

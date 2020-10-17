@@ -16,7 +16,7 @@ from Crypto.Util.number import inverse
 from helios_server.helios.crypto.utils import random
 
 
-class Cryptosystem(object):
+class Cryptosystem:
     def __init__(self):
         self.p = None
         self.q = None
@@ -33,7 +33,7 @@ class Cryptosystem(object):
         return keypair
 
 
-class KeyPair(object):
+class KeyPair:
     def __init__(self):
         self.pk = PublicKey()
         self.sk = SecretKey()
@@ -479,7 +479,7 @@ class Ciphertext:
         return cls.from_dict({"alpha": split[0], "beta": split[1]})
 
 
-class ZKProof(object):
+class ZKProof:
     def __init__(self):
         self.commitment = {"A": None, "B": None}
         self.challenge = None
@@ -539,7 +539,7 @@ class ZKDisjunctiveProof:
         self.proofs = proofs
 
 
-class DLogProof(object):
+class DLogProof:
     def __init__(self, commitment=None, challenge=None, response=None):
         self.commitment = commitment
         self.challenge = challenge

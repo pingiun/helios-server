@@ -620,7 +620,7 @@ class EGCiphertext:
         return cls.from_dict({"alpha": split[0], "beta": split[1]})
 
 
-class EGZKProof(object):
+class EGZKProof:
     def __init__(self):
         self.commitment = {"A": None, "B": None}
         self.challenge = None
@@ -720,7 +720,7 @@ class EGZKDisjunctiveProof:
     toJSONDict = to_dict
 
 
-class DLogProof(object):
+class DLogProof:
     def __init__(self, commitment, challenge, response):
         self.commitment = commitment
         self.challenge = challenge

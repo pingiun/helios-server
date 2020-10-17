@@ -6,34 +6,36 @@
 
 <p>
 <b>Who can vote?</b>
-{% if election.openreg %}
-{{election.pretty_eligibility|safe}}
-{% else %}
-<em>Only the voters listed here</em>.
-{% endif %}
+  {% if election.openreg %}
+    {{election.pretty_eligibility|safe}}
+  {% else %}
+    <em>Only the voters listed here</em>.
+  {% endif %}
 </p>
 
 {% if admin_p and not election.frozen_at %}
-{% if election.private_p %}
-<em>Your election is marked private, which means you cannot open registration up more widely</em>.<br />
-{% else %}
-You can change this setting:
-<form method="post" action="{% url "election@voters@eligibility" election.uuid %}">
-<input type="hidden" name="csrf_token" value="{{csrf_token}}" />
-<input type="radio" name="eligibility" value="openreg" {% if election.openreg and not election.eligibility %}CHECKED{% endif %} /> anyone can vote<br />
-<input type="radio" name="eligibility" value="closedreg" {% if not election.openreg %}CHECKED{% endif %} /> only voters listed explicitly below can vote<br />
-{% if categories %}
-<input type="radio" name="eligibility" value="limitedreg" {% if election.eligibility %}CHECKED{% endif %} /> only voters who are members of 
-<select name="category_id">
-{% for category in categories %}
-<option value="{{category.id}}" {% if eligibility_category_id == category.id %}SELECTED{% endif %}> {{category.name}}</option>
-{% endfor %}
-</select>
-<br />
-{% endif %}
-<input type="submit" value="update" />
-</form>
-{% endif %}
+  {% if election.private_p %}
+    <em>Your election is marked private, which means you cannot open registration up more widely</em>.<br />
+  {% else %}
+    You can change this setting:
+    <form method="post" action="{% url "election@voters@eligibility" election.uuid %}">
+    <input type="hidden" name="csrf_token" value="{{csrf_token}}" />
+    <input type="radio" name="eligibility" value="openreg" {% if election.openreg and not election.eligibility %}CHECKED{% endif %} /> anyone can vote<br />
+    <input type="radio" name="eligibility" value="closedreg" {% if not election.openreg %}CHECKED{% endif %} /> only voters listed explicitly below can vote<br />
+    {% if categories %}
+      <input type="radio" name="eligibility" value="limitedreg" {% if election.eligibility %}CHECKED{% endif %} /> only voters who are members of
+      <select name="category_id">
+      {% for category in categories %}
+        <option value="{{category.id}}" {% if eligibility_category_id == category.id %}SELECTED{% endif %}> {{category.name}}</option>
+      {% endfor %}
+      </select>
+      <br />
+    {% endif %}
+    <input type="checkbox" name="allow_password" value="allow" {% if allow_password %} checked {% endif %} {% if not election.eligibility %}disabled{% endif %} /> additionally allow invited users by password
+    <br />
+    <input type="submit" value="update" />
+    </form>
+  {% endif %}
 {% endif %}
 
 {% if email_voters and election.frozen_at and admin_p %}
@@ -52,7 +54,7 @@ You can change this setting:
 
 {% if admin_p %}
 <!-- Add a Voter: WORK HERE-->
-{% if upload_p and not election.openreg %}
+{% if not election.openreg or allow_password and upload_p %}
 <p>
 <a class="button" href="{% url "election@voters@upload" election_uuid=election.uuid %}">bulk upload voters</a>
 </p>
@@ -152,5 +154,10 @@ Voters {{voters_page.start_index}} - {{voters_page.end_index}} (of {{total_voter
 <br /><br />
 <em>no voters.</em>
 {% endif %}
-
+<script>
+  $(':radio[name="eligibility"]').change(() => {
+      console.log($(':radio[value="limitedreg"]').attr("checked"));
+    $(':checkbox[name="allow_password"]').attr("disabled", !$(':radio[value="limitedreg"]').attr("checked"));
+  });
+</script>
 {% endblock %}

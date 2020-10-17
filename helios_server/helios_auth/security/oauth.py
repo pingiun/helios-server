@@ -48,7 +48,7 @@ def generate_nonce(length=8):
 
 # OAuthConsumer is a data type that represents the identity of the Consumer
 # via its shared secret with the Service Provider.
-class OAuthConsumer(object):
+class OAuthConsumer:
     key = None
     secret = None
 
@@ -59,7 +59,7 @@ class OAuthConsumer(object):
 
 # OAuthToken is a data type that represents an End User via either an access
 # or request token.
-class OAuthToken(object):
+class OAuthToken:
     # access tokens and request tokens
     key = None
     secret = None
@@ -92,7 +92,7 @@ class OAuthToken(object):
 
 
 # OAuthRequest represents the request and can be serialized
-class OAuthRequest(object):
+class OAuthRequest:
     """
     OAuth parameters:
         - oauth_consumer_key
@@ -316,7 +316,7 @@ class OAuthRequest(object):
 
 
 # OAuthServer is a worker to check a requests validity against a data store
-class OAuthServer(object):
+class OAuthServer:
     timestamp_threshold = 300  # in seconds, five minutes
     version = VERSION
     signature_methods = None
@@ -471,7 +471,7 @@ class OAuthServer(object):
 
 
 # OAuthClient is a worker to attempt to execute a request
-class OAuthClient(object):
+class OAuthClient:
     consumer = None
     token = None
 
@@ -499,7 +499,7 @@ class OAuthClient(object):
 
 
 # OAuthDataStore is a database abstraction used to lookup consumers and tokens
-class OAuthDataStore(object):
+class OAuthDataStore:
     def lookup_consumer(self, key):
         # -> OAuthConsumer
         raise NotImplementedError
@@ -526,7 +526,7 @@ class OAuthDataStore(object):
 
 
 # OAuthSignatureMethod is a strategy class that implements a signature method
-class OAuthSignatureMethod(object):
+class OAuthSignatureMethod:
     def get_name(self):
         # -> str
         raise NotImplementedError

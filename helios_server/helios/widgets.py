@@ -181,7 +181,7 @@ class SplitSelectDateTimeWidget(MultiWidget):
     MultiWidget = A widget that is composed of multiple widgets.
 
     This class combines SelectTimeWidget and SelectDateWidget so we have something
-    like SpliteDateTimeWidget (in django.forms.widgets), but with Select elements.
+    like SplitDateTimeWidget (in django.forms.widgets), but with Select elements.
     """
 
     template_name = ""
@@ -205,7 +205,7 @@ class SplitSelectDateTimeWidget(MultiWidget):
     def value_from_datadict(self, data, files, name):
         if data.get(name, None) is None:
             return [
-                widget.value_from_datadict(data, files, name + "_%s" % i)
+                widget.value_from_datadict(data, files, name)
                 for i, widget in enumerate(self.widgets)
             ]
         return self.decompress(data.get(name, None))
