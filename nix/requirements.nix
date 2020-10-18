@@ -1,4 +1,8 @@
-{ pkgs, python, lib }:
+{ pkgs
+, python
+, lib
+, sources ? import ./sources.nix
+}:
 
 let
 
@@ -14,12 +18,7 @@ in
       version = "3.6.3.0";
       disabled = isPyPy;
 
-      src = pkgs.fetchFromGitHub {
-        owner = "celery";
-        repo = "billiard";
-        rev = "5c1dc2ab18a77ed738b1aa4a1f916b092bd7fabe";
-        hash = "sha256:1dp0wj10fp0yrdlzx6vifvg4w6mwl7w58rilpkk658pk9rp4866n";
-      };
+      src = sources.billiard;
 
       checkInputs = [ pytest case psutil ];
       checkPhase = ''
