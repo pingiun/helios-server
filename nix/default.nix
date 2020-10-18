@@ -1,8 +1,9 @@
 { sources ? import ./sources.nix
+, system ? "x86_64-linux"
 }:
 let
   # default nixpkgs
-  pkgs = import sources.nixpkgs {};
+  pkgs = import sources.nixpkgs { localSystem.system = system; };
 
   # gitignore.nix
   gitignoreSource = (import sources."gitignore.nix" { inherit (pkgs) lib; }).gitignoreSource;
