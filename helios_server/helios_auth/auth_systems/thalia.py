@@ -16,25 +16,6 @@ STATUS_UPDATES = False
 LOGIN_MESSAGE = "Log in with my Thalia Account"
 
 oauth = OAuth()
-# oauth.register(
-#     name="thalia",
-#     client_id="cRJt1rw0hIoVbRLzpWI12wZKJWsyM1FeU5vk7XMS",
-#     client_secret="hdkuWIGXAOwRcK78yIf9DtcA6FpFeXxMDsxRfAmoubJrTHWB7aGUeehk1MqMGGI2CyrLBhWabFhUatBOFtA7bGB8deqGTWcg7Ulrv2hqGBQ9GofxnN6MRTtJXUh4is1G",
-#     authorize_url="https://staging.thalia.nu/user/oauth/authorize/",
-#     access_token_url="https://staging.thalia.nu/user/oauth/token/",
-#     api_base_url="https://staging.thalia.nu/api/v1/",
-#     scope="members:read",
-# )
-
-oauth.register(
-    name="thalia",
-    client_id="rLIrRdepTqJrHdul1YwbT2klK1ePBwlUaUORVf3V",
-    client_secret="vFaiWcHkmSG5hkqZkB3v3KtrVCx7xhVa8a9CvfihI2GT7phZefzLvmFzA5WAlSjDGejwJhVcMipAp9ctRGnq3GQSulBsYhkaBTrUHPWWmX7zsIykrMpklqq7ECpSPVcQ",
-    authorize_url="http://127.0.0.1:8001/user/oauth/authorize/",
-    access_token_url="http://127.0.0.1:8001/user/oauth/token/",
-    api_base_url="http://127.0.0.1:8001/api/v1/",
-    scope="members:read",
-)
 
 
 def get_auth_url(request, redirect_url):
@@ -116,6 +97,7 @@ def list_categories(user):
         {"id": str(event["pk"]), "name": f'Present at "{event["title"]}"'}
         for event in events
     ]
+
 
 def check_constraint(constraint, user):
     """

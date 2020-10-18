@@ -1679,7 +1679,8 @@ def voters_list_pretty(request, election):
             "limit": limit,
             "total_voters": total_voters,
             "upload_p": VOTERS_UPLOAD,
-            "allow_password": election.eligibility and {"auth_system": "password"} in election.eligibility,
+            "allow_password": election.eligibility
+            and {"auth_system": "password"} in election.eligibility,
             "q": q,
             "voter_files": voter_files,
             "categories": categories,
@@ -1723,9 +1724,7 @@ def voters_eligibility(request, election):
             {"auth_system": user.user_type, "constraint": [constraint]}
         ]
         if "allow_password" in request.POST:
-            election.eligibility += [
-                {"auth_system": "password"}
-            ]
+            election.eligibility += [{"auth_system": "password"}]
     else:
         election.eligibility = None
 

@@ -236,7 +236,9 @@ class LDObject:
         ld_type = type_hint
         if "@type" in d:
             if ld_type is not None and ld_type != d["@type"]:
-                warnings.warn(f"Expected type from `type_hint` isn't the same as @type in object: {type_hint} !+ {d['type']}")
+                warnings.warn(
+                    f"Expected type from `type_hint` isn't the same as @type in object: {type_hint} !+ {d['type']}"
+                )
             ld_type = d["@type"]
 
         # get the LD class so we know what wrapped object to instantiate

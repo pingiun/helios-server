@@ -262,11 +262,21 @@ CAS_ELIGIBILITY_REALM = get_from_env("CAS_ELIGIBILITY_REALM", "")
 CLEVER_CLIENT_ID = get_from_env("CLEVER_CLIENT_ID", "")
 CLEVER_CLIENT_SECRET = get_from_env("CLEVER_CLIENT_SECRET", "")
 
+THALIA_BASE_URL = get_from_env("THALIA_BASE_URL", "http://127.0.0.1:8001")
+
 AUTHLIB_OAUTH_CLIENTS = {
     "google": {
         "client_id": GOOGLE_CLIENT_ID,
         "client_secret": GOOGLE_CLIENT_SECRET,
-    }
+    },
+    "thalia": {
+        "client_id": get_from_env("THALIA_CLIENT_ID", ""),
+        "client_secret": get_from_env("THALIA_CLIENT_SECRET", ""),
+        "authorize_url": f"{THALIA_BASE_URL}/user/oauth/authorize/",
+        "access_token_url": f"{THALIA_BASE_URL}/user/oauth/token/",
+        "api_base_url": f"{THALIA_BASE_URL}/api/v1/",
+        "scope": "members:read",
+    },
 }
 
 # email server

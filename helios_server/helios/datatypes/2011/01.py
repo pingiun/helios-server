@@ -70,7 +70,9 @@ class EncryptedAnswer(LDObject):
         # answer is not a structured field, it's an as-is integer
     }
 
+
 Questions = arrayOf("2011/01/Question")
+
 
 class Question(LDObject):
     FIELDS = [
@@ -82,5 +84,5 @@ class Question(LDObject):
         "question",
         "result_type",
         "short_name",
-        "tally_type"
+        "tally_type",
     ]

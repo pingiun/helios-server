@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('helios', '0001_initial'),
+        ("helios", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='election',
-            name='datatype',
-            field=models.CharField(default='2011/01/Election', max_length=250),
+            model_name="election",
+            name="datatype",
+            field=models.CharField(default="2011/01/Election", max_length=250),
         ),
     ]
