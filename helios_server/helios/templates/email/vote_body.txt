@@ -20,7 +20,7 @@ In order to protect your privacy, this election is configured
 to never display your voter login ID, name, or email address to the public.
 Instead, the ballot tracking center will only display your alias.
 
-Your voter alias is {{voter.alias}}.
+Your voter alias is V{{voter.alias_num}}.
 
 IMPORTANTLY, when you are prompted to log in to vote,
 please use your *voter ID*, not your alias.
