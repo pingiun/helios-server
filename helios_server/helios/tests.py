@@ -92,7 +92,7 @@ class ElectionModelTests(TestCase):
         FILE = "helios_server/helios/fixtures/voter-file.csv"
         with open(FILE, "r", encoding="utf-8") as f:
             vf = models.VoterFile.objects.create(
-                election=election, voter_file=File(f, "voter_file.css")
+                election=election, voter_file=File(f, "voter_file.csv")
             )
             vf.process()
 

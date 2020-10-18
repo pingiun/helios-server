@@ -34,17 +34,5 @@
         "type": "tarball",
         "url": "https://github.com/cachix/pre-commit-hooks.nix/archive/938e2c8bd2a36d67aabbd3976731049c175ab3e8.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "pypi2nix": {
-        "branch": "master",
-        "description": "Abandoned! Generate Nix expressions for Python packages [maintainer=@seppeljordan]",
-        "homepage": "",
-        "owner": "nix-community",
-        "repo": "pypi2nix",
-        "rev": "0dbd119465ff2ccbe43cb83431eba792b536a640",
-        "sha256": "1zxgy3znw0i6h1lxhmnx001c1pdcyszwqj8f0d0092nmnngdzsrl",
-        "type": "tarball",
-        "url": "https://github.com/nix-community/pypi2nix/archive/0dbd119465ff2ccbe43cb83431eba792b536a640.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
