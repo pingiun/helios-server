@@ -22,6 +22,8 @@ class Trustee(LDObject):
     STRUCTURED_FIELDS = {
         "pok": "pkc/elgamal/DiscreteLogProof",
         "public_key": "pkc/elgamal/PublicKey",
+        "decryption_factors": arrayOf(arrayOf("core/BigInteger")),
+        "decryption_proofs": arrayOf(arrayOf("legacy/EGZKProof")),
     }
 
     # removed some public key processing for now
