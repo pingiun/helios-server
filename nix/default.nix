@@ -1,5 +1,5 @@
 { sources ? import ./sources.nix
-, system ? "x86_64-linux"
+, system ? (import <nixpkgs> {}).system
 }:
 let
   # default nixpkgs
