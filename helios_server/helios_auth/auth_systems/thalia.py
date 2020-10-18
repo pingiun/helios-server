@@ -16,6 +16,9 @@ STATUS_UPDATES = False
 LOGIN_MESSAGE = "Log in with my Thalia Account"
 
 oauth = OAuth()
+oauth.register(
+    name="thalia",
+)
 
 
 def get_auth_url(request, redirect_url):
