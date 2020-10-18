@@ -1,5 +1,5 @@
 { sources ? import ./sources.nix
-, system ? (import <nixpkgs> {}).system
+, system
 }:
 let
   # default nixpkgs
