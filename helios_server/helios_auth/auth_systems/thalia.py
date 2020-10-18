@@ -18,6 +18,7 @@ LOGIN_MESSAGE = "Log in with my Thalia Account"
 oauth = OAuth()
 oauth.register(
     name="thalia",
+    scope="members:read",
 )
 
 

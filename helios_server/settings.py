@@ -275,7 +275,6 @@ AUTHLIB_OAUTH_CLIENTS = {
         "authorize_url": f"{THALIA_BASE_URL}/user/oauth/authorize/",
         "access_token_url": f"{THALIA_BASE_URL}/user/oauth/token/",
         "api_base_url": f"{THALIA_BASE_URL}/api/v1/",
-        "scope": "members:read",
     },
 }
 
