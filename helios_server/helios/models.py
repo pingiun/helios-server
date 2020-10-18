@@ -189,13 +189,11 @@ class Election(HeliosModel):
     def last_alias_num(self):
         if not self.use_voter_aliases:
             return None
-
-        return (
-            self.voter_set.filter(alias_num__isnull=False)
-            .order_by("-alias_num")
-            .first()
-            or 0
-        )
+        
+        voter = self.voter_set.filter(alias_num__isnull=False).order_by("-alias_num").first()
+        if voter is None:
+            return 0
+        return voter.alias_num
 
     @property
     def encrypted_tally_hash(self):
