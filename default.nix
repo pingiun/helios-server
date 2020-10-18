@@ -1,2 +1,2 @@
-{ system ? (import <nixpkgs> {}).system }:
+{ system ? builtins.currentSystem }:
 (import ./nix { inherit system; }).ci
