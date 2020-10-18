@@ -189,7 +189,7 @@ class Election(HeliosModel):
     def last_alias_num(self):
         if not self.use_voter_aliases:
             return None
-        
+
         voter = self.voter_set.filter(alias_num__isnull=False).order_by("-alias_num").first()
         if voter is None:
             return 0
