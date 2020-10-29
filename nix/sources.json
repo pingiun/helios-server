@@ -5,7 +5,7 @@
         "homepage": "",
         "owner": "celery",
         "repo": "billiard",
-        "rev": "v3.6.3.0",
+        "rev": "5c1dc2ab18a77ed738b1aa4a1f916b092bd7fabe",
         "sha256": "1dp0wj10fp0yrdlzx6vifvg4w6mwl7w58rilpkk658pk9rp4866n",
         "type": "tarball",
         "url": "https://github.com/celery/billiard/archive/5c1dc2ab18a77ed738b1aa4a1f916b092bd7fabe.tar.gz",
@@ -29,10 +29,10 @@
         "homepage": "https://github.com/NixOS/nixpkgs",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "cfed29bfcb28259376713005d176a6f82951014a",
-        "sha256": "034m892hxygminkj326y7l3bp4xhx0v154jcmla7wdfqd23dk5xm",
+        "rev": "f4254fba4f27cbbafd6ed889dfe21b6e7f3bec6b",
+        "sha256": "1lgygr2bnqil2mh6fxscn5yb7ynfa62g6qhwnslrxnj90cyys9g0",
         "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs/archive/cfed29bfcb28259376713005d176a6f82951014a.tar.gz",
+        "url": "https://github.com/NixOS/nixpkgs/archive/f4254fba4f27cbbafd6ed889dfe21b6e7f3bec6b.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "pre-commit-hooks.nix": {
@@ -41,10 +41,10 @@
         "homepage": "",
         "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
-        "rev": "938e2c8bd2a36d67aabbd3976731049c175ab3e8",
-        "sha256": "0rp962rs4hghmzi4xn2l720jnzy043rjbh2hdbz7qk4nvnq2fp5d",
+        "rev": "efdbd6d28f7f44db3d9f8cf0e0b4cb9db0d259e1",
+        "sha256": "1qngfbp1bqn52ipf992vrj4vp1cvvcv2yvzp0fs9yawqjxzk4j5m",
         "type": "tarball",
-        "url": "https://github.com/cachix/pre-commit-hooks.nix/archive/938e2c8bd2a36d67aabbd3976731049c175ab3e8.tar.gz",
+        "url": "https://github.com/cachix/pre-commit-hooks.nix/archive/efdbd6d28f7f44db3d9f8cf0e0b4cb9db0d259e1.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
