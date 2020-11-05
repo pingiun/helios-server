@@ -9,7 +9,9 @@ import json
 
 
 ## JSON
-def to_json(d):
+def to_json(d, no_whitespace=False):
+    if no_whitespace:
+        return json.dumps(d, sort_keys=True, separators=(',', ':'))
     return json.dumps(d, sort_keys=True)
 
 
