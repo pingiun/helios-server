@@ -25,28 +25,12 @@ let
     requirements.django-webtest
   ]);
 
-  helios-server = pkgs.python39.pkgs.buildPythonApplication {
-    pname = "helios-server";
-    version = "4.0.0";
-
-    doCheck = true;
-
-    checkPhase = ''
-      python manage.py test
-    '';
-
-    propagatedBuildInputs = with pkgs.python39Packages; [
-      django
-      requirements.authlib
-      psycopg2
-      pycryptodome
-      requirements.celery
-      requirements.bleach
-      requirements.django-webtest
-    ];
-
-    inherit src;
-  };
+  helios-tests = pkgs.runCommand "helios-tests" { } ''
+    cp -r ${src}/* .
+    ${my-python}/bin/python manage.py test
+    ${pkgs.black}/bin/black --check .
+    touch $out
+  '';
 
   manage-py = "${src}/manage.py";
   wsgi = "helios_server.wsgi:application";
@@ -69,9 +53,11 @@ in
   devTools = {
     inherit (pkgs) niv;
     inherit (pre-commit-hooks) pre-commit;
+    inherit (pkgs) nixpkgs-fmt;
     inherit helios-manage;
     inherit helios-gunicorn;
     inherit my-python;
+    black = pkgs.black;
   };
 
   # to be built by github actions
@@ -80,13 +66,13 @@ in
       inherit src;
       hooks = {
         shellcheck.enable = true;
-        nixpkgs-fmt.enable = false;
-        nix-linter.enable = false;
+        nixpkgs-fmt.enable = true;
+        nix-linter.enable = true;
       };
       # generated files
       excludes = [ "^nix/sources\.nix$" ];
     };
-    inherit helios-server;
+    inherit helios-tests;
     inherit helios-gunicorn;
   };
 }

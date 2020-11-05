@@ -212,11 +212,14 @@ class SecretKey:
 
         t = (w + self.x * c) % self.pk.q
 
-        return m, {
-            "commitment": {"A": str(a), "B": str(b)},
-            "challenge": str(c),
-            "response": str(t),
-        }
+        return (
+            m,
+            {
+                "commitment": {"A": str(a), "B": str(b)},
+                "challenge": str(c),
+                "response": str(t),
+            },
+        )
 
     def prove_sk(self, challenge_generator):
         """

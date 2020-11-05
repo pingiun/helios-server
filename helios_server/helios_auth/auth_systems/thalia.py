@@ -17,15 +17,33 @@ LOGIN_MESSAGE = "Log in with my Thalia Account"
 
 oauth = OAuth()
 oauth.register(
-    name="thalia",
-    scope="members:read",
+    name="thalia", scope="members:read activemembers:read",
 )
+
+_THALIA_GROUPS = None
+_THALIA_GROUPS_UPDATE = None
+
+
+def get_groups(token):
+    global _THALIA_GROUPS, _THALIA_GROUPS_UPDATE
+    if (
+        _THALIA_GROUPS is None
+        or _THALIA_GROUPS_UPDATE + datetime.timedelta(hours=1) < datetime.datetime.now()
+    ):
+        resp = oauth.thalia.get("activemembers/groups/", token=token)
+        if resp.status_code == 403:
+            oauth.thalia.refresh_token()
+
+        _THALIA_GROUPS = json.loads(resp.text)
+        _THALIA_GROUPS_UPDATE = datetime.datetime.now()
+
+    return _THALIA_GROUPS
 
 
 def get_auth_url(request, redirect_url):
     redirect_uri = request.build_absolute_uri(redirect_url)
 
-    return oauth.thalia.authorize_redirect(request, redirect_uri).url
+    return oauth.thalia.authorize_redirect(request, redirect_uri, approval_prompt="auto").url
 
 
 def get_user_info_after_auth(request):
@@ -46,11 +64,18 @@ def get_user_info_after_auth(request):
 
     name = user["display_name"]
 
+    groups = get_groups(token)
+    groups = [
+        str(group["pk"])
+        for group in groups
+        if user["pk"] in [member["pk"] for member in group["members"]]
+    ]
+
     return {
         "type": "thalia",
         "user_id": email,
         "name": name,
-        "info": {"email": email},
+        "info": {"email": email, "groups": groups},
         "token": token,
     }
 
@@ -83,7 +108,11 @@ def send_message(user_id, name, user_info, subject, body):
 
 
 def generate_constraint(category_id, user):
-    return {"event": category_id}
+    if category_id.startswith("event:"):
+        return {"event": category_id.removeprefix("event:")}
+    if category_id.startswith("group:"):
+        return {"group": category_id.removeprefix("group:")}
+    raise ValueError(f"Invalid category_id for thalia: {category_id}")
 
 
 def pretty_eligibility(constraint):
@@ -98,8 +127,11 @@ def list_categories(user):
     resp = oauth.thalia.get("events/", token=user.token)
     events = [event for event in json.loads(resp.text) if event["registration_allowed"]]
     return [
-        {"id": str(event["pk"]), "name": f'Present at "{event["title"]}"'}
+        {"id": f'event:{event["pk"]}', "name": f'Present at "{event["title"]}"'}
         for event in events
+    ] + [
+        {"id": f'group:{group["pk"]}', "name": group["name"]}
+        for group in get_groups(user.token)
     ]
 
 
@@ -107,10 +139,13 @@ def check_constraint(constraint, user):
     """
     for eligibility
     """
-    events_resp = oauth.thalia.get("events/", token=user.token)
-    events = json.loads(events_resp.text)
-    present = [str(event["pk"]) for event in events if event["present"] == True]
-    return constraint["event"] in present
+    if "event" in constraint:
+        events_resp = oauth.thalia.get("events/", token=user.token)
+        events = json.loads(events_resp.text)
+        present = [str(event["pk"]) for event in events if event["present"] == True]
+        return constraint["event"] in present
+    if "group" in constraint:
+        return constraint["group"] in user.info["groups"]
 
 
 #

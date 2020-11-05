@@ -895,9 +895,7 @@ class ElectionBlackboxTests(WebTest):
         # combine decryptions
         response = self.client.post(
             "/helios/elections/%s/combine_decryptions" % election_id,
-            {
-                "csrf_token": self.client.session["csrf_token"],
-            },
+            {"csrf_token": self.client.session["csrf_token"],},
         )
 
         # after tallying, we now go back to election_view
@@ -910,9 +908,7 @@ class ElectionBlackboxTests(WebTest):
         # release
         response = self.client.post(
             "/helios/elections/%s/release_result" % election_id,
-            {
-                "csrf_token": self.client.session["csrf_token"],
-            },
+            {"csrf_token": self.client.session["csrf_token"],},
         )
 
         # check that tally matches

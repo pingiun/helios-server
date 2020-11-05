@@ -72,6 +72,7 @@ class EncryptedAnswer(LDObject):
         # answer is not a structured field, it's an as-is integer
     }
 
+
 class ShortCastVote(LDObject):
     FIELDS = ["cast_at", "voter_uuid", "voter_hash", "vote_hash"]
     STRUCTURED_FIELDS = {"cast_at": "core/Timestamp"}
@@ -84,6 +85,7 @@ class CastVote(LDObject):
     @property
     def short(self):
         return self.instantiate(self.wrapped_obj, datatype="2011/01/ShortCastVote")
+
 
 Questions = arrayOf("2011/01/Question")
 

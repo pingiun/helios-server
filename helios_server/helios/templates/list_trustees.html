@@ -43,7 +43,7 @@
 {% else %}
 ({{t.email}})
 {% if not election.frozen_at %}[<a onclick="return confirm('Are you sure you want to remove this Trustee?');" href="{% url "election@trustees@delete" election.uuid %}?uuid={{t.uuid}}">x</a>]{% endif %}
-[<a onclick="return confirm('Are you sure you want to send this trustee his/her admin URL?');" href="{% url "election@trustee@send-url" election.uuid t.uuid %}">send login</a>]
+[<a onclick="return confirm('Are you sure you want to send this trustee their admin URL?');" href="{% url "election@trustee@send-url" election.uuid t.uuid %}">send login</a>]
 {% endif %}
 {% endif %}
 </h5>

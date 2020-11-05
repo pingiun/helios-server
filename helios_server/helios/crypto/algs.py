@@ -280,11 +280,14 @@ class EGSecretKey:
 
         t = (w + self.x * c) % self.pk.q
 
-        return m, {
-            "commitment": {"A": str(a), "B": str(b)},
-            "challenge": str(c),
-            "response": str(t),
-        }
+        return (
+            m,
+            {
+                "commitment": {"A": str(a), "B": str(b)},
+                "challenge": str(c),
+                "response": str(t),
+            },
+        )
 
     def to_dict(self):
         return {"x": str(self.x), "public_key": self.pk.to_dict()}

@@ -30,8 +30,6 @@ class Migration(migrations.Migration):
                 ("token", helios_server.helios_auth.jsonfield.JSONField(null=True)),
                 ("admin_p", models.BooleanField(default=False)),
             ],
-            options={
-                "unique_together": {("user_type", "user_id")},
-            },
+            options={"unique_together": {("user_type", "user_id")},},
         ),
     ]

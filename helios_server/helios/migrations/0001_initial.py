@@ -192,9 +192,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={
-                "unique_together": {("election", "voter_login_id")},
-            },
+            options={"unique_together": {("election", "voter_login_id")},},
             bases=(models.Model, helios_server.helios.datatypes.LDObjectContainer),
         ),
         migrations.CreateModel(
@@ -322,9 +320,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={
-                "unique_together": {("election", "email")},
-            },
+            options={"unique_together": {("election", "email")},},
             bases=(models.Model, helios_server.helios.datatypes.LDObjectContainer),
         ),
     ]

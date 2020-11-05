@@ -190,7 +190,11 @@ class Election(HeliosModel):
         if not self.use_voter_aliases:
             return None
 
-        voter = self.voter_set.filter(alias_num__isnull=False).order_by("-alias_num").first()
+        voter = (
+            self.voter_set.filter(alias_num__isnull=False)
+            .order_by("-alias_num")
+            .first()
+        )
         if voter is None:
             return 0
         return voter.alias_num
