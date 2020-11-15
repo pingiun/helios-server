@@ -6,7 +6,9 @@ GAE
 Ben Adida
 (ben@adida.net)
 """
+from authlib.integrations.django_client import token_update
 from django.db import models
+from django.dispatch import receiver
 
 from .auth_systems import can_check_constraint, AUTH_SYSTEMS
 from .jsonfield import JSONField
@@ -15,6 +17,24 @@ from .jsonfield import JSONField
 # an exception to catch when a user is no longer authenticated
 class AuthenticationExpired(Exception):
     pass
+
+@receiver(token_update)
+def on_token_update(sender, name, token, refresh_token=None, access_token=None, **kwargs):
+    if refresh_token:
+        item = User.objects.filter(user_type=name, token__contains=f'"refresh_token": "{refresh_token}"').first()
+    elif access_token:
+        item = User.objects.filter(user_type=name, token__contains=f'"access_token": "{access_token}"').first()
+    else:
+        return
+
+    if item is None:
+        return
+
+    # update old token
+    item.token["access_token"] = token['access_token']
+    item.token["refresh_token"] = token.get('refresh_token')
+    item.token["expires_at"] = token['expires_at']
+    item.save()
 
 
 class User(models.Model):

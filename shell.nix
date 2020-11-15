@@ -2,7 +2,7 @@
 }:
 
 project.pkgs.mkShell {
-  buildInputs = builtins.attrValues project.devTools;
+  buildInputs = project.devTools;
   shellHook = ''
     ${project.ci.pre-commit-check.shellHook}
   '';

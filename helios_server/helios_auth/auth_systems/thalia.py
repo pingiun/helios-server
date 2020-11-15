@@ -125,6 +125,8 @@ def eligibility_category_id(constraint):
 
 def list_categories(user):
     resp = oauth.thalia.get("events/", token=user.token)
+    if resp.status_code == 403:
+        oauth.thalia.refresh_token()
     events = [event for event in json.loads(resp.text) if event["registration_allowed"]]
     return [
         {"id": f'event:{event["pk"]}', "name": f'Present at "{event["title"]}"'}
@@ -141,6 +143,9 @@ def check_constraint(constraint, user):
     """
     if "event" in constraint:
         events_resp = oauth.thalia.get("events/", token=user.token)
+        if events_resp.status_code == 403:
+            oauth.thalia.refresh_token()
+
         events = json.loads(events_resp.text)
         present = [str(event["pk"]) for event in events if event["present"] == True]
         return constraint["event"] in present

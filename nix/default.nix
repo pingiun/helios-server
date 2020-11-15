@@ -50,15 +50,13 @@ in
   inherit pkgs src;
 
   # provided by shell.nix
-  devTools = {
-    inherit (pkgs) niv;
-    inherit (pre-commit-hooks) pre-commit;
-    inherit (pkgs) nixpkgs-fmt;
-    inherit helios-manage;
-    inherit helios-gunicorn;
-    inherit my-python;
-    black = pkgs.black;
-  };
+  devTools = [
+    my-python
+    pkgs.niv
+    pre-commit-hooks.pre-commit
+    pkgs.nixpkgs-fmt
+    pkgs.black
+  ];
 
   # to be built by github actions
   ci = {
@@ -72,7 +70,6 @@ in
       # generated files
       excludes = [ "^nix/sources\.nix$" ];
     };
-    inherit helios-tests;
-    inherit helios-gunicorn;
+    inherit helios-tests helios-gunicorn helios-manage;
   };
 }
